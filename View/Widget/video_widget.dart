@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:player/View/Widget/bottom_sheed.dart';
 import 'package:player/View/Widget/my_container.dart';
-import 'package:player/ViewModel/rout_vm.dart';
 import 'package:player/ViewModel/screen_values.dart';
 
 class VideoWidget extends StatelessWidget {
@@ -10,12 +10,7 @@ class VideoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screen = Screen();
     return MyContainer(
-      onTap: (){
-        print("salmaasa asasa  ");
-        debugPrint("I am work");
-        Navigator.pushNamed(context, Rout.pagePlayer);
-      },
- 
+      onTap: () => _settingModelBottomSheed(context),
       child: Column(
         children: [
           Container(
@@ -24,14 +19,13 @@ class VideoWidget extends StatelessWidget {
             height: screen.width * 0.7,
           ),
           Container(
-            color:  Colors.grey[800],
+            color: Colors.grey[800],
             width: screen.width,
             height: screen.width * 0.2,
-            padding:const EdgeInsets.all(16),
-            child:  Row(
-              children:const [
-                CircleAvatar(
-                  child: Icon(Icons.ac_unit_rounded)),
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: const [
+                CircleAvatar(child: Icon(Icons.ac_unit_rounded)),
                 Text("salam"),
               ],
             ),
@@ -39,5 +33,13 @@ class VideoWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _settingModelBottomSheed(context) {
+    showBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return const MyBottomSheed();
+        });
   }
 }

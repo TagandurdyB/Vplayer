@@ -26,14 +26,12 @@ class MyContainer extends StatelessWidget {
       this.alignment,
       this.gradientBegin,
       this.gradientEnd,
-      @required this.onTap});
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (onTap != null) onTap!();
-      },
+      onTap: onTap != null ? () => onTap!() : null,
       child: Container(
         padding: padding,
         margin: margin,
