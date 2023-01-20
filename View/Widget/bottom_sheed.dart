@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:player/View/Widget/video_play_asset_widget.dart';
+import 'package:player/ViewModel/Providers/provider_video.dart';
+import 'package:provider/provider.dart';
 
 import '../../ViewModel/screen_values.dart';
 
@@ -13,10 +15,12 @@ class MyBottomSheed extends StatefulWidget {
 
 class _MyBottomSheedState extends State<MyBottomSheed>
     with SingleTickerProviderStateMixin {
-  bool _isFullScreen = true;
   late AnimationController animControler;
 
   double sheedHight = Screen().height;
+
+  double dragStartY = 0.0;
+  double dragEndY = 0.0;
 
   @override
   void initState() {
@@ -25,24 +29,21 @@ class _MyBottomSheedState extends State<MyBottomSheed>
       vsync: this,
       duration: const Duration(milliseconds: 100),
     );
+    //  Provider.of<ProviderVideo>(context, listen: false).changeFullScreen(true);
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onVerticalDragDown: (DragDownDetails details) {
-        setState(() {
-          // _isFullScreen = false;
-        });
-      },
-      onTap: (() => setState(() {
-            _isFullScreen = true;
-          })),
-      child: screenChange(_isFullScreen),
+      onTap: () => Provider.of<ProviderVideo>(context, listen: false)
+          .changeFullScreen(true),
+      child: screenChange(),
     );
   }
 
-  Widget screenChange(bool isFull) {
+  Widget screenChange() {
+    bool isFull =
+        Provider.of<ProviderVideo>(context).isFullScreen;
     final screen = Screen();
     if (isFull) {
       animControler.forward();
@@ -64,10 +65,7 @@ class _MyBottomSheedState extends State<MyBottomSheed>
       color: Colors.blue,
       child: Stack(
         children: [
-          const VideoPlayerAssetWidget(
-              //  width: isFull ? screen.width : 80,
-              // height: isFull ? screen.width * 0.7 : 40,
-              ),
+          buildVideoDrag(),
           Visibility(
             visible: !isFull,
             child: Align(
@@ -95,4 +93,21 @@ class _MyBottomSheedState extends State<MyBottomSheed>
       ),
     );
   }
+
+  Widget buildVideoDrag() => GestureDetector(
+        onVerticalDragStart: (detal) {
+          dragStartY = detal.globalPosition.dy;
+        },
+        onVerticalDragUpdate: (detal) {
+          dragEndY = detal.globalPosition.dy;
+        },
+        onVerticalDragEnd: (detal) {
+          if (dragEndY - dragStartY > 70) {
+            debugPrint(" $dragStartY    $dragEndY  ");
+            Provider.of<ProviderVideo>(context, listen: false)
+                .changeFullScreen(false);
+          }
+        },
+        child: const VideoPlayerAssetWidget(),
+      );
 }

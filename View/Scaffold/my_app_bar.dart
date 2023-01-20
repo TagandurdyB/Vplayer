@@ -7,10 +7,10 @@ class MyAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final providerTheme=Provider.of<ProviderTheme>(context);
+    final providerTheme = Provider.of<ProviderTheme>(context);
     return AppBar(
       centerTitle: true,
-      title:  Text("Player",style: providerTheme.styleAppBar),
+      title: Text("Player", style: providerTheme.styleAppBar),
     );
   }
 }

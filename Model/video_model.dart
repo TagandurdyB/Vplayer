@@ -1,5 +1,5 @@
 class VideoObj{
   final String videoUrl;
-  
-  VideoObj({this.videoUrl=""});
+  final String videoText;
+  VideoObj({this.videoText="", this.videoUrl=""});
 }

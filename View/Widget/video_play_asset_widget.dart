@@ -1,8 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:player/View/Widget/basic_overlay_widget.dart';
 import 'package:player/View/Widget/my_container.dart';
+import 'package:player/ViewModel/Providers/provider_video.dart';
 import 'package:player/ViewModel/screen_values.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerAssetWidget extends StatefulWidget {
@@ -26,6 +27,7 @@ class _VideoPlayerAssetWidgetState extends State<VideoPlayerAssetWidget> {
       ..addListener(() => setState(() {}))
       // ..setLooping(true)
       ..initialize().then((_) => videoController.play());
+    //Provider.of<ProviderVideo>(context, listen: false).ch;
   }
 
   @override
@@ -34,14 +36,17 @@ class _VideoPlayerAssetWidgetState extends State<VideoPlayerAssetWidget> {
     super.dispose();
   }
 
-  bool _isBtnsShow = false;
-  bool _isPause = false;
+  bool isPause = false;
+  bool isFullScreen = true;
 
   double playerWidth = 0.0;
   double playerHeight = 0.0;
 
   @override
   Widget build(BuildContext context) {
+    final providerV = Provider.of<ProviderVideo>(context);
+    isPause = providerV.isVideoPause;
+    isFullScreen = providerV.isFullScreen;
     return videoController.value.isInitialized
         ? AspectRatio(
             aspectRatio: videoController.value.aspectRatio,
@@ -55,7 +60,8 @@ class _VideoPlayerAssetWidgetState extends State<VideoPlayerAssetWidget> {
                     MyContainer(
                         onTap: _showBtns, child: VideoPlayer(videoController)),
                     Visibility(
-                      visible: _isBtnsShow,
+                      visible:
+                          Provider.of<ProviderVideo>(context).isForwardBtnsShow,
                       child: btnGroup(),
                     )
                   ],
@@ -64,65 +70,73 @@ class _VideoPlayerAssetWidgetState extends State<VideoPlayerAssetWidget> {
             ))
         : Container(
             alignment: Alignment.center,
-            width: widget.width,
-            height: widget.height,
+            width: playerWidth,
+            height: playerWidth,
             color: Colors.black,
             child: const CircularProgressIndicator(),
           );
   }
 
-  void _showBtns() {
-    setState(() {
-      _isBtnsShow = true;
-      btnTimer(3);
-    });
-  }
-
-  void btnTimer(int second) {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (second > 0 && !_isPause) second--;
-      if (second == 0) {
-        timer.cancel();
-        _isBtnsShow = false;
-        setState(() {});
-      }
-    });
-  }
+  void _showBtns() =>
+      Provider.of<ProviderVideo>(context, listen: false).tongleForvardBtns;
 
   Widget btnGroup() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    //final providerV = Provider.of<ProviderVideo>(context, listen: false);
+    return Container(
+      color: Colors.black54,
+      child: Stack(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        fit: StackFit.expand,
+        alignment: Alignment.center,
+        children: [
+          buildCenterBtns(),
+          Visibility(
+            visible: isFullScreen,
+            child: Container(
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.all(Screen().width * 0.02),
+                child: buildVideoIndicator()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCenterBtns() {
+    //   final providerV = Provider.of<ProviderVideo>(context, listen: false);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Icon(
-              Icons.skip_previous,
-              size: playerWidth * 0.2,
-              color: Colors.white,
-            ),
-            MyContainer(
-              color: Colors.transparent,
-              onTap: tongelePlay,
-              child: Icon(
-                _isPause ? Icons.pause : Icons.play_arrow,
-                size: playerWidth * 0.3,
-                color: Colors.white,
-              ),
-            ),
-            Icon(
-              Icons.skip_next,
-              size: playerWidth * 0.2,
-              color: Colors.white,
-            ),
-          ],
+        Icon(
+          Icons.skip_previous,
+          size: playerWidth * 0.2,
+          color: Colors.white,
+        ),
+        buildPausePlayBtn(isPause),
+        Icon(
+          Icons.skip_next,
+          size: playerWidth * 0.2,
+          color: Colors.white,
         ),
       ],
     );
   }
 
-  void tongelePlay() => setState(() {
-        _isPause = !_isPause;
-        _isPause?videoController.pause():videoController.play();
-      });
+  Widget buildPausePlayBtn(bool isPause) => MyContainer(
+        color: Colors.transparent,
+        onTap: tongelePlay,
+        child: Icon(
+          isPause ? Icons.pause : Icons.play_arrow,
+          size: playerWidth * 0.3,
+          color: Colors.white,
+        ),
+      );
+  void tongelePlay() {
+    final providerV = Provider.of<ProviderVideo>(context, listen: false);
+    providerV.tonglePause;
+    providerV.isVideoPause ? videoController.pause() : videoController.play();
+  }
+
+  Widget buildVideoIndicator() =>
+      BasicOverlyWidget(videoController: videoController);
 }

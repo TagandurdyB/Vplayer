@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Player",
-     theme: MyTheme(context).theme(),
+      theme: MyTheme(context).theme(),
       initialRoute: Rout.pageLogo,
       routes: Rout.pages,
     );
