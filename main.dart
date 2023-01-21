@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:player/ViewModel/Providers/my_providers.dart';
+import '/ViewModel/Providers/my_providers.dart';
 import 'package:provider/provider.dart';
 import 'ViewModel/rout_vm.dart';
 import 'ViewModel/theme_vm.dart';

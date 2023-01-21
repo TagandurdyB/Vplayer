@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:player/Model/theme_model.dart';
+import '/Model/theme_model.dart';
 
 bool _isLight = false;
 
@@ -28,6 +28,9 @@ class ProviderTheme extends ChangeNotifier {
 
 TextStyle get styleAppBar=>
 isLight?ThemeModel().lightStyleAppBar:ThemeModel().darkStyleAppBar;
+
+Widget get iconMainPlay=>
+isLight?ThemeModel().lightIconPlay:ThemeModel().darkIconPlay;
 
   Brightness get brightnessStatusBar =>
       isLight ? ThemeModel.lightBrightness : ThemeModel.darkBrightness;

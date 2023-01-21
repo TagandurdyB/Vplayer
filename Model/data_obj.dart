@@ -1,4 +1,4 @@
-import 'package:player/Model/video_model.dart';
+import '/Model/video_model.dart';
 
 class Data {
   static List<VideoObj> get list => [

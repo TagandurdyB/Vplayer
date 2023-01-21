@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:player/View/Widget/bottom_sheed.dart';
-import 'package:player/View/Widget/my_container.dart';
-import 'package:player/ViewModel/Providers/provider_video.dart';
-import 'package:player/ViewModel/screen_values.dart';
+import 'package:local_player/Model/video_model.dart';
+import 'package:local_player/ViewModel/Providers/provider_theme.dart';
+import '/View/Widget/bottom_sheed.dart';
+import '/View/Widget/my_container.dart';
+import '/ViewModel/Providers/provider_video.dart';
+import '/ViewModel/screen_values.dart';
 import 'package:provider/provider.dart';
 
 class VideoCardWidget extends StatelessWidget {
-  final String aboutText;
-  const VideoCardWidget({super.key, this.aboutText = ""});
+  final VideoObj obj;
+  const VideoCardWidget({super.key, required this.obj});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +19,11 @@ class VideoCardWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            color: Colors.black,
-            width: screen.width,
-            height: screen.width * 0.7,
-          ),
+              alignment: Alignment.center,
+              color: Colors.black,
+              width: screen.width,
+              height: screen.width * 0.6,
+              child: ProviderTheme().iconMainPlay),
           Container(
             color: Colors.grey[800],
             width: screen.width,
@@ -35,7 +38,7 @@ class VideoCardWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
-                      aboutText,
+                      obj.videoText,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
@@ -58,13 +61,17 @@ class VideoCardWidget extends StatelessWidget {
   }
 
   void _settingModelBottomSheed(context) {
-    Provider.of<ProviderVideo>(context, listen: false).changeForwardShow(true);
+    final providerV=
+    Provider.of<ProviderVideo>(context, listen: false);
+    providerV.changeForwardShow(true);
+    providerV.changeFullScreen(true);
+    providerV.changeVideoWork(true);
+    debugPrint("sheed open!");
     showBottomSheet(
         enableDrag: false,
-        
         context: context,
         builder: (BuildContext context) {
-          return const MyBottomSheed();
+          return MyBottomSheed(obj: obj);
         });
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:player/ViewModel/screen_values.dart';
+import '/ViewModel/screen_values.dart';
 
 class ThemeModel {
   /*colors=======================================*/
@@ -19,9 +19,30 @@ class ThemeModel {
   static const Color darkColorModel = Color(0xff1A0B6C);
   /*styles=======================================*/
   //light//
-     TextStyle lightStyleAppBar=TextStyle(color: lightColorText,fontSize:Screen().width*0.1 );
+  TextStyle lightStyleAppBar =
+      TextStyle(color: lightColorText, fontSize: Screen().width * 0.1);
   //dark//
-   TextStyle darkStyleAppBar=TextStyle(color: darkColorText,fontSize:Screen().width*0.1 );
+  TextStyle darkStyleAppBar =
+      TextStyle(color: darkColorText, fontSize: Screen().width * 0.1);
+  /*Icons========================================*/
+  //light//
+  Widget lightIconPlay = CircleAvatar(
+      backgroundColor: Colors.white38,
+      radius: Screen().width * 0.1,
+      child: Icon(
+        Icons.play_arrow,
+        color: Colors.black,
+        size: Screen().width * 0.2,
+      ));
+  //dark//
+  Widget darkIconPlay = CircleAvatar(
+      backgroundColor: Colors.white38,
+      radius: Screen().width * 0.1,
+      child: Icon(
+        Icons.play_arrow,
+        color: Colors.black,
+        size: Screen().width * 0.2,
+      ));
   /*brightness===================================*/
   static const Brightness lightBrightness = Brightness.dark;
   static const Brightness darkBrightness = Brightness.light;

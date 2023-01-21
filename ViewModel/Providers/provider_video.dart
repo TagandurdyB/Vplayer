@@ -1,11 +1,18 @@
 import 'package:flutter/widgets.dart';
-import 'package:video_player/video_player.dart';
 
 class ProviderVideo extends ChangeNotifier {
   final int _forbardBtnsSec = 3;
 
   bool _isForwardBtnsShow = false;
   bool get isForwardBtnsShow => _isForwardBtnsShow;
+
+  bool _isVideoWork = false;
+  bool get isVideoWork => _isVideoWork;
+
+  void changeVideoWork(bool isWork) {
+    _isVideoWork = isWork;
+    notifyListeners();
+  }
 
   bool _isVideoPause = false;
   bool get isVideoPause => _isVideoPause;

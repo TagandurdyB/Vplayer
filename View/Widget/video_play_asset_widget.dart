@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:player/View/Widget/basic_overlay_widget.dart';
-import 'package:player/View/Widget/my_container.dart';
-import 'package:player/ViewModel/Providers/provider_video.dart';
-import 'package:player/ViewModel/screen_values.dart';
+import '/View/Widget/basic_overlay_widget.dart';
+import '/View/Widget/my_container.dart';
+import '/ViewModel/Providers/provider_video.dart';
+import '/ViewModel/screen_values.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
