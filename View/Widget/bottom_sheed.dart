@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/View/Widget/portrait_played_widget.dart';
-import 'package:local_player/View/Widget/video_play_file_widget.dart';
 import '/ViewModel/Providers/provider_video.dart';
 import 'package:provider/provider.dart';
 
@@ -17,19 +16,12 @@ class MyBottomVideoSheed extends StatefulWidget {
 
 class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
     with SingleTickerProviderStateMixin {
-  late AnimationController animControler;
-
   double sheedHight = Screen().height;
 
   double dragStartY = 0.0;
   double dragEndY = 0.0;
 
   bool isFull = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,63 +48,31 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
     return Container(
       height: sheedHight,
       width: double.infinity,
-      color: Colors.blue,
+      color: Colors.grey[700],
       child: Column(
         children: [
           Stack(
-            children: [
-              buildVideoDrag(),
-              Visibility(
-                visible: !isFull,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () {
-                        Provider.of<ProviderVideo>(context, listen: false)
-                            .changeShowSheed(false);
-                        Navigator.pop(context);
-                      }),
-                ),
-              ),
-              /*Visibility(
-                  visible: isFull,
-                  child: Flexible(
-                    child: ListView.builder(
-                      itemCount: 10,
-                      itemBuilder: ((context, index) => Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            color: Colors.orange,
-                            width: double.infinity,
-                            height: 100,
-                          )),
-                    ),
-                  ))*/
-            ],
+            children: [buildVideoDrag(), buildMinBtns()],
           ),
-          Visibility(
-              visible: isFull,
-              child: Container(
-                width: 100,
-                height: 50,
-                color: Colors.red,
-              ))
+          buildSheedList(),
         ],
       ),
     );
-
-    /*  return Container(
-      height: sheedHight,
-      width: double.infinity,
-      color: Colors.blue,
-      child: Stack(
-        children: [
-          buildVideoDrag(),
-        ],
-      ),
-    );*/
   }
 
+  Widget buildMinBtns() => Visibility(
+        visible: !isFull,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              bulidCloseBtn(),
+            ],
+          ),
+        ),
+      );
+      
   Widget buildVideoDrag() => GestureDetector(
       onVerticalDragStart: (detal) {
         dragStartY = detal.globalPosition.dy;
@@ -129,10 +89,28 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
       },
       //child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
       // child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
-      child: PortraitPlayerWidget(videoFile: widget.obj.videoFile!));
-  /* child: Container(
-        height: 150,
-        width: 200,
-        color: Colors.red,
-      ));*/
+      child: PortraitPlayerWidget(obj: widget.obj));
+
+  Widget bulidCloseBtn() => IconButton(
+      icon: const Icon(Icons.close, color: Colors.white),
+      onPressed: () {
+        Provider.of<ProviderVideo>(context, listen: false)
+            .changeShowSheed(false);
+        Navigator.pop(context);
+      });
+
+  Widget buildSheedList() => Visibility(
+      visible: isFull,
+      child: Flexible(
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: 10,
+          itemBuilder: ((context, index) => Container(
+                margin: const EdgeInsets.all(8),
+                color: Colors.black,
+                width: double.infinity,
+                height: 100,
+              )),
+        ),
+      ));
 }

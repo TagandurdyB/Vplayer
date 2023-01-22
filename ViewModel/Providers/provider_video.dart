@@ -1,10 +1,20 @@
 import 'package:flutter/widgets.dart';
+import 'package:local_player/Model/video_model.dart';
 
 class ProviderVideo extends ChangeNotifier {
   final int _forbardBtnsSec = 3;
 
-  final int _sheedAnimMillSec = 100;
-  int get sheedAnimMillSec => _sheedAnimMillSec;
+  /* VideoObj _obj = VideoObj();
+  VideoObj get obj => _obj;
+
+  void changeObj(VideoObj newObj) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _obj = newObj;
+      notifyListeners();
+    });
+  }*/
+
+
 
   bool _isForwardBtnsShow = false;
   bool get isForwardBtnsShow => _isForwardBtnsShow;
@@ -42,6 +52,12 @@ class ProviderVideo extends ChangeNotifier {
   }
 
   void get tonglePause => _tonglePause();
+
+  void changePause(bool isPause) {
+    _isVideoPause = isPause;
+    notifyListeners();
+  }
+
 
   void changeForwardShow(bool i) {
     _isForwardBtnsShow = i;

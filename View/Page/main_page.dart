@@ -20,6 +20,7 @@ class MainPage extends StatelessWidget {
             MultipleVideoPicker().repick(context, 2);
           } else {
             providerV.changeShowSheed(false);
+            providerV.changePause(false);
             Navigator.pop(context);
           }
         },

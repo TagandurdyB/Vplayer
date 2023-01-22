@@ -1,14 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/ViewModel/Providers/provider_video.dart';
 import 'package:local_player/ViewModel/screen_values.dart';
 import 'package:provider/provider.dart';
 import '/View/Widget/full_screen_player_widget.dart';
 import 'package:video_player/video_player.dart';
 
+// ignore: must_be_immutable
 class PortraitPlayerWidget extends StatefulWidget {
-  final File videoFile;
-  const PortraitPlayerWidget({super.key, required this.videoFile});
+  VideoObj obj;
+  PortraitPlayerWidget({super.key, required this.obj});
 
   @override
   State<PortraitPlayerWidget> createState() => _PortraitPlayerWidgetState();
@@ -16,19 +18,16 @@ class PortraitPlayerWidget extends StatefulWidget {
 
 class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
   late VideoPlayerController videoController;
-  late double videoWidth;
-  late double videoHeight;
-  bool isFullScreen = true;
+  late double screenWidth;
+  late double screenHeight;
 
   @override
   void initState() {
     super.initState();
-    videoController = VideoPlayerController.file(widget.videoFile)
+    videoController = VideoPlayerController.file(widget.obj.videoFile!)
       ..addListener(() => setState(() {}))
       // ..setLooping(true)
       ..initialize().then((_) => videoController.play());
-    videoWidth = Screen().width;
-    videoHeight = Screen().height;
   }
 
   @override
@@ -37,13 +36,26 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
     super.dispose();
   }
 
+  void _fillVideoSize() {
+    bool isFullScreen = Provider.of<ProviderVideo>(context).isFullScreen;
+    final srceen = Screen();
+    if (isFullScreen) {
+      screenHeight = srceen.width * 0.6;
+      screenWidth = srceen.width;
+    } else {
+      screenHeight = srceen.height * 0.1;
+      screenWidth = srceen.height * 0.16;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    isFullScreen = Provider.of<ProviderVideo>(context).isFullScreen;
-    return Container(
-        color: Colors.black,
-        height: isFullScreen ? videoWidth * 0.6 : videoHeight * 0.1,
-        width: isFullScreen ? videoWidth : videoHeight * 0.16,
-        child: VideoPlayerFullScreen(videoController: videoController));
+    _fillVideoSize();
+
+    return SizedBox(
+        height: screenHeight,
+        width: screenWidth,
+        child: VideoPlayerFullScreen(
+            width: screenWidth, videoController: videoController));
   }
 }
