@@ -11,18 +11,13 @@ class VideoPlayerFullScreen extends StatelessWidget {
   bool isPause = false;
   bool isFullScreen = true;
 
-  double playerWidth = 0.0;
-  double playerHeight = 0.0;
+
 
   @override
   Widget build(BuildContext context) => videoController.value.isInitialized
       ? AspectRatio(
           aspectRatio: videoController.value.aspectRatio,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              playerWidth = constraints.maxWidth;
-              playerHeight = constraints.maxHeight;
-              return Stack(
+          child:  Stack(
                 alignment: Alignment.center,
                 children: [
                   MyContainer(
@@ -34,9 +29,7 @@ class VideoPlayerFullScreen extends StatelessWidget {
                     child: btnGroup(),
                   )*/
                 ],
-              );
-            },
-          ))
+              ))
       : const Center(child: CircularProgressIndicator(color: Colors.red));
 
   Widget buildVideo() => Stack(

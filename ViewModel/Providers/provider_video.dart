@@ -3,6 +3,9 @@ import 'package:flutter/widgets.dart';
 class ProviderVideo extends ChangeNotifier {
   final int _forbardBtnsSec = 3;
 
+  final int _sheedAnimMillSec = 100;
+  int get sheedAnimMillSec => _sheedAnimMillSec;
+
   bool _isForwardBtnsShow = false;
   bool get isForwardBtnsShow => _isForwardBtnsShow;
 

@@ -18,6 +18,7 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
   late VideoPlayerController videoController;
   late double videoWidth;
   late double videoHeight;
+  bool isFullScreen = true;
 
   @override
   void initState() {
@@ -38,25 +39,11 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isFullScreen = Provider.of<ProviderVideo>(context).isFullScreen;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            color: Colors.red,
-            height: isFullScreen
-                ? videoWidth * 0.6
-                : videoHeight * 0.1, // videoHeight,
-            width: isFullScreen ? videoWidth : videoHeight * 0.16,
-            child: VideoPlayerFullScreen(videoController: videoController)),
-        Visibility(
-            visible: isFullScreen,
-            child: Container(
-              width: 100,
-              height: 50,
-              color: Colors.red,
-            ))
-      ],
-    );
+    isFullScreen = Provider.of<ProviderVideo>(context).isFullScreen;
+    return Container(
+        color: Colors.black,
+        height: isFullScreen ? videoWidth * 0.6 : videoHeight * 0.1,
+        width: isFullScreen ? videoWidth : videoHeight * 0.16,
+        child: VideoPlayerFullScreen(videoController: videoController));
   }
 }

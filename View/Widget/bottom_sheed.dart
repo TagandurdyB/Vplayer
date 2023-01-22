@@ -29,10 +29,6 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
   @override
   void initState() {
     super.initState();
-    animControler = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-    );
   }
 
   @override
@@ -44,57 +40,63 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
     );
   }
 
-  void animSheed(double sheedHightDegry) {
-    final screen = Screen();
-    animControler.addListener(() {
-      setState(() {
-        sheedHight = screen.height * (animControler.value + sheedHightDegry);
-      });
+  void sheedHeight(double sheedHightDegry) {
+    setState(() {
+      sheedHight = Screen().height * sheedHightDegry;
     });
   }
 
   Widget screenChange() {
     isFull = Provider.of<ProviderVideo>(context).isFullScreen;
     if (isFull) {
-      animControler.forward();
-      animSheed(0);
+      sheedHeight(1);
     } else {
-      animControler.reverse();
-      animSheed(0.1);
+      sheedHeight(0.1);
     }
     return Container(
       height: sheedHight,
       width: double.infinity,
       color: Colors.blue,
-      child: Stack(
+      child: Column(
         children: [
-          buildVideoDrag(),
-          Visibility(
-            visible: !isFull,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () {
-                    Provider.of<ProviderVideo>(context, listen: false)
-                        .changeShowSheed(false);
-                    Navigator.pop(context);
-                  }),
-            ),
-          ),
-          /*Visibility(
-              visible: isFull,
-              child: Flexible(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: ((context, index) => Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        color: Colors.orange,
-                        width: double.infinity,
-                        height: 100,
-                      )),
+          Stack(
+            children: [
+              buildVideoDrag(),
+              Visibility(
+                visible: !isFull,
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () {
+                        Provider.of<ProviderVideo>(context, listen: false)
+                            .changeShowSheed(false);
+                        Navigator.pop(context);
+                      }),
                 ),
-              ))*/
+              ),
+              /*Visibility(
+                  visible: isFull,
+                  child: Flexible(
+                    child: ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: ((context, index) => Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            color: Colors.orange,
+                            width: double.infinity,
+                            height: 100,
+                          )),
+                    ),
+                  ))*/
+            ],
+          ),
+          Visibility(
+              visible: isFull,
+              child: Container(
+                width: 100,
+                height: 50,
+                color: Colors.red,
+              ))
         ],
       ),
     );
@@ -127,11 +129,7 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
       },
       //child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
       // child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
-      child: Container(
-    //      height: isFull ? Screen().width * 0.6 : Screen().height * 0.1,
-     //     width: isFull ? Screen().width : Screen().height * 0.16,
-          color: Colors.black,
-          child: PortraitPlayerWidget(videoFile: widget.obj.videoFile!)));
+      child: PortraitPlayerWidget(videoFile: widget.obj.videoFile!));
   /* child: Container(
         height: 150,
         width: 200,
