@@ -13,9 +13,6 @@ class MultipleVideoPicker {
 
     if (result != null) {
       List<File> files = result.paths.map((path) => File(path!)).toList();
-      files.forEach((element) {
-        debugPrint("path:=${element.path}");
-      });
       Provider.of<ProviderFile>(context, listen: false).changeVideos(files);
       Navigator.pushNamed(context, Rout.pageMain);
     } else {

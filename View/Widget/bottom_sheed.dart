@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:local_player/Model/video_model.dart';
+import 'package:local_player/View/Widget/portrait_played_widget.dart';
 import 'package:local_player/View/Widget/video_play_file_widget.dart';
-
-import '/View/Widget/video_play_asset_widget.dart';
 import '/ViewModel/Providers/provider_video.dart';
 import 'package:provider/provider.dart';
 
 import '../../ViewModel/screen_values.dart';
 
-class MyBottomSheed extends StatefulWidget {
+class MyBottomVideoSheed extends StatefulWidget {
   final VideoObj obj;
-  const MyBottomSheed({super.key, required this.obj});
+  const MyBottomVideoSheed({super.key, required this.obj});
 
   @override
-  State<MyBottomSheed> createState() => _MyBottomSheedState();
+  State<MyBottomVideoSheed> createState() => _MyBottomVideoSheedState();
 }
 
-class _MyBottomSheedState extends State<MyBottomSheed>
+class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
     with SingleTickerProviderStateMixin {
   late AnimationController animControler;
 
@@ -24,6 +23,8 @@ class _MyBottomSheedState extends State<MyBottomSheed>
 
   double dragStartY = 0.0;
   double dragEndY = 0.0;
+
+  bool isFull = true;
 
   @override
   void initState() {
@@ -43,29 +44,27 @@ class _MyBottomSheedState extends State<MyBottomSheed>
     );
   }
 
-  Widget screenChange() {
-    bool isFull = Provider.of<ProviderVideo>(context).isFullScreen;
+  void animSheed(double sheedHightDegry) {
     final screen = Screen();
+    animControler.addListener(() {
+      setState(() {
+        sheedHight = screen.height * (animControler.value + sheedHightDegry);
+      });
+    });
+  }
+
+  Widget screenChange() {
+    isFull = Provider.of<ProviderVideo>(context).isFullScreen;
     if (isFull) {
-      debugPrint("sheed Full!");
       animControler.forward();
-      animControler.addListener(() {
-        setState(() {
-          sheedHight = screen.height * animControler.value;
-        });
-        debugPrint("sheedHight:=$sheedHight");
-      });
+      animSheed(0);
     } else {
-      debugPrint("sheed unFull!");
       animControler.reverse();
-      animControler.addListener(() {
-        setState(() {
-          sheedHight = screen.height * (animControler.value + 0.1);
-        });
-      });
+      animSheed(0.1);
     }
     return Container(
       height: sheedHight,
+      width: double.infinity,
       color: Colors.blue,
       child: Stack(
         children: [
@@ -75,9 +74,12 @@ class _MyBottomSheedState extends State<MyBottomSheed>
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () {
+                    Provider.of<ProviderVideo>(context, listen: false)
+                        .changeShowSheed(false);
+                    Navigator.pop(context);
+                  }),
             ),
           ),
           /*Visibility(
@@ -124,7 +126,12 @@ class _MyBottomSheedState extends State<MyBottomSheed>
         }
       },
       //child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
-      child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
+      // child: VideoPlayerFileWidget(videoFile: widget.obj.videoFile!));
+      child: Container(
+    //      height: isFull ? Screen().width * 0.6 : Screen().height * 0.1,
+     //     width: isFull ? Screen().width : Screen().height * 0.16,
+          color: Colors.black,
+          child: PortraitPlayerWidget(videoFile: widget.obj.videoFile!)));
   /* child: Container(
         height: 150,
         width: 200,

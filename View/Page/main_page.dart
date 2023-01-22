@@ -12,13 +12,14 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerF = Provider.of<ProviderFile>(context);
-
+    final providerV = Provider.of<ProviderVideo>(context, listen: false);
     return ScaffoldAll(
         funcBackBtn: () {
-          if (!Provider.of<ProviderVideo>(context, listen: false)
-              .isVideoWork) {
+          debugPrint("Work!");
+          if (!providerV.isShowSheed) {
             MultipleVideoPicker().repick(context, 2);
           } else {
+            providerV.changeShowSheed(false);
             Navigator.pop(context);
           }
         },

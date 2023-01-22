@@ -6,11 +6,11 @@ class ProviderVideo extends ChangeNotifier {
   bool _isForwardBtnsShow = false;
   bool get isForwardBtnsShow => _isForwardBtnsShow;
 
-  bool _isVideoWork = false;
-  bool get isVideoWork => _isVideoWork;
+  bool _isShowSheed = false;
+  bool get isShowSheed => _isShowSheed;
 
-  void changeVideoWork(bool isWork) {
-    _isVideoWork = isWork;
+  void changeShowSheed(bool isShow) {
+    _isShowSheed = isShow;
     notifyListeners();
   }
 

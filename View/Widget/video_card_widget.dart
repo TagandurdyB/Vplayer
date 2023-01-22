@@ -61,17 +61,16 @@ class VideoCardWidget extends StatelessWidget {
   }
 
   void _settingModelBottomSheed(context) {
-    final providerV=
-    Provider.of<ProviderVideo>(context, listen: false);
-    providerV.changeForwardShow(true);
+    final providerV = Provider.of<ProviderVideo>(context, listen: false);
+    providerV.tongleForvardBtns;
     providerV.changeFullScreen(true);
-    providerV.changeVideoWork(true);
+    providerV.changeShowSheed(true);
     debugPrint("sheed open!");
     showBottomSheet(
         enableDrag: false,
         context: context,
         builder: (BuildContext context) {
-          return MyBottomSheed(obj: obj);
+          return MyBottomVideoSheed(obj: obj);
         });
   }
 }

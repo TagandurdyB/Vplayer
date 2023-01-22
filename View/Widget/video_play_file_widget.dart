@@ -22,8 +22,6 @@ class VideoPlayerFileWidget extends StatefulWidget {
 class _VideoPlayerFileWidgetState extends State<VideoPlayerFileWidget> {
   final scren = Screen();
   late VideoPlayerController videoController;
-  /*final File file = File(
-      "/data/user/0/com.example.local_player/cache/file_picker/20230110_192902.mp4");*/
 
   @override
   void initState() {
@@ -32,14 +30,10 @@ class _VideoPlayerFileWidgetState extends State<VideoPlayerFileWidget> {
       ..addListener(() => setState(() {}))
       // ..setLooping(true)
       ..initialize().then((_) => videoController.play());
-    //Provider.of<ProviderVideo>(context, listen: false).ch;
-    
   }
 
   @override
   void dispose() {
-    
-  //  Provider.of<ProviderVideo>(context, listen: false).changeVideoWork(false);
     videoController.dispose();
     super.dispose();
   }
@@ -89,14 +83,19 @@ class _VideoPlayerFileWidgetState extends State<VideoPlayerFileWidget> {
       Provider.of<ProviderVideo>(context, listen: false).tongleForvardBtns;
 
   Widget btnGroup() {
-    //final providerV = Provider.of<ProviderVideo>(context, listen: false);
     return Container(
       color: Colors.black54,
       child: Stack(
-        // mainAxisAlignment: MainAxisAlignment.center,
         fit: StackFit.expand,
         alignment: Alignment.center,
         children: [
+          Visibility(
+            visible: isFullScreen,
+            child: Container(
+                alignment: Alignment.topRight,
+                padding: EdgeInsets.all(Screen().width * 0.02),
+                child: buildVideoActions()),
+          ),
           buildCenterBtns(),
           Visibility(
             visible: isFullScreen,
@@ -111,7 +110,6 @@ class _VideoPlayerFileWidgetState extends State<VideoPlayerFileWidget> {
   }
 
   Widget buildCenterBtns() {
-    //   final providerV = Provider.of<ProviderVideo>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -130,11 +128,20 @@ class _VideoPlayerFileWidgetState extends State<VideoPlayerFileWidget> {
     );
   }
 
+  Widget buildVideoActions() => Row(mainAxisSize: MainAxisSize.min, children: [
+        IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.settings,
+              color: Colors.grey[300],
+            )),
+      ]);
+
   Widget buildPausePlayBtn(bool isPause) => MyContainer(
         color: Colors.transparent,
         onTap: tongelePlay,
         child: Icon(
-          isPause ? Icons.pause : Icons.play_arrow,
+          isPause ? Icons.play_arrow : Icons.pause,
           size: playerWidth * 0.3,
           color: Colors.white,
         ),
