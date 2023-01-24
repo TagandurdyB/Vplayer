@@ -91,11 +91,6 @@ class _VideoCardWidgetState extends State<VideoCardWidget> {
     providV.startVideo;
     providV.changeVideoObj(widget.obj);
     debugPrint("sheed open!");
-    /* showBottomSheet(
-        enableDrag: false,
-        context: context,
-        builder: (BuildContext context) {
-          return MyBottomVideoSheed(obj: widget.obj);
-        });*/
+
   }
 }

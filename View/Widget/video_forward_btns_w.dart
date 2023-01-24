@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:local_player/View/Widget/settings_sheed.dart';
 import 'package:local_player/ViewModel/Providers/provider_file.dart';
+import 'package:local_player/ViewModel/time_converter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../Model/video_model.dart';
@@ -27,41 +28,11 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
 
   late bool isPause;
 
-  @override
-  void initState() {
-    super.initState();
-    // widget.videoController.addListener(_checkVideo);
-  }
-
-  Duration getDuration(Duration value) {
-    return Duration(milliseconds: value.inMilliseconds.round());
-  }
-
-  String durationToString(Duration position, Duration duration) {
-    String result = "00:00";
-    if (duration.inHours != 0) {
-      result = [position.inHours, position.inMinutes, position.inSeconds]
-          .map((seg) => seg.remainder(60).toString().padLeft(2, "0"))
-          .join(":");
-    } else {
-      result = [position.inMinutes, position.inSeconds]
-          .map((seg) => seg.remainder(60).toString().padLeft(2, "0"))
-          .join(":");
-    }
-    return result;
-  }
-
   String getPosition() {
     final value = widget.videoController.value;
-    final Duration position = getDuration(value.position);
-    final Duration duration = getDuration(value.duration);
-    return durationToString(position, duration);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    //  widget.videoController.dispose();
+    final Duration position = TimeConterter.getDuration(value.position);
+    final Duration duration = TimeConterter.getDuration(value.duration);
+    return TimeConterter.durationToString(position, duration);
   }
 
   @override
@@ -104,8 +75,6 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
               children: [
                 buildTimer(),
                 Row(
-                  //crossAxisAlignment: CrossAxisAlignment.center,
-                  // alignment: Alignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
