@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/View/Widget/video_forward_btns_w.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -9,8 +10,9 @@ import 'my_container.dart';
 // ignore: must_be_immutable
 class VideoPlayerFullScreen extends StatelessWidget {
   final VideoPlayerController videoController;
-  final double width;
-  VideoPlayerFullScreen({super.key, required this.videoController, required this.width});
+  final VideoObj obj;
+  VideoPlayerFullScreen(
+      {super.key, required this.videoController, required this.obj});
 
   bool isPause = false;
   bool isFullScreen = true;
@@ -22,13 +24,15 @@ class VideoPlayerFullScreen extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              MyContainer(onTap: () => _showBtns(context), 
-              color:Colors.black,child: buildVideo()),
+              MyContainer(
+                  onTap: () => _showBtns(context),
+                  color: Colors.black,
+                  child: buildVideo()),
               Visibility(
                 visible: Provider.of<ProviderVideo>(context).isForwardBtnsShow,
                 child: VideoForwardBtns(
                   videoController: videoController,
-                  playerWidth:width,
+                  obj: obj,
                 ),
               )
             ],

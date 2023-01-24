@@ -15,7 +15,9 @@ class MyTheme {
         bodyText2: TextStyle(),
       ).apply(
         bodyColor: providerTheme.colorText,
-        // displayColor: Colors.blue,
+      ),
+      bottomSheetTheme:const BottomSheetThemeData(
+backgroundColor: Colors.transparent
       ),
       primarySwatch: Colors.blue,
       canvasColor: providerTheme.colorCanvas,

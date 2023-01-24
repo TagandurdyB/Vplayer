@@ -12,26 +12,29 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-        currentIndex: _selectIndex,
-        onTap: (index) {
-          setState(() {
-            _selectIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        unselectedItemColor: Colors.grey[400],
-        selectedItemColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.explore_outlined), label: "Explore"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline), label: "Add"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.subscriptions_outlined), label: "Subscriptions"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.video_library_outlined), label: "Library"),
-        ]);
+    return SafeArea(
+      child: BottomNavigationBar(
+          currentIndex: _selectIndex,
+          onTap: (index) {
+            setState(() {
+              _selectIndex = index;
+            });
+          },
+          type: BottomNavigationBarType.fixed,
+          unselectedItemColor: Colors.grey[400],
+          selectedItemColor: Colors.white,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.explore_outlined), label: "Explore"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.add_circle_outline), label: "Add"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.subscriptions_outlined),
+                label: "Subscriptions"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.video_library_outlined), label: "Library"),
+          ]),
+    );
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/ViewModel/Providers/provider_video.dart';
@@ -46,6 +45,7 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
       screenHeight = srceen.height * 0.1;
       screenWidth = srceen.height * 0.16;
     }
+    widget.obj.changeWidth(screenWidth);
   }
 
   @override
@@ -56,6 +56,6 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
         height: screenHeight,
         width: screenWidth,
         child: VideoPlayerFullScreen(
-            width: screenWidth, videoController: videoController));
+            obj: widget.obj, videoController: videoController));
   }
 }

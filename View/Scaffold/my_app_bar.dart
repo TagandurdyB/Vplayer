@@ -10,12 +10,15 @@ class MyAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final providerTheme = Provider.of<ProviderTheme>(context);
     return AppBar(
-      leading: BackButton(onPressed: () {
-        if (funcBackBtn != null) {
-          funcBackBtn!();
-        }else
-       { Navigator.pop(context);}
-      }),
+      leading: funcBackBtn != null
+          ? BackButton(onPressed: () {
+              if (funcBackBtn != null) {
+                funcBackBtn!();
+              } else {
+                Navigator.pop(context);
+              }
+            })
+          : null,
       centerTitle: true,
       title: Text("Player", style: providerTheme.styleAppBar),
     );

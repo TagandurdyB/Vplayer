@@ -5,16 +5,15 @@ import '/View/Scaffold/my_navigation_bar.dart';
 class ScaffoldAll extends StatelessWidget {
   final Widget body;
   final Function? funcBackBtn;
-  final GlobalKey<ScaffoldState>? scaffoldKey;
-  const ScaffoldAll({required this.body, super.key, this.funcBackBtn,  this.scaffoldKey});
+  const ScaffoldAll({required this.body, super.key, this.funcBackBtn});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
+      key: key,
       appBar: PreferredSize(
         key: key,
         preferredSize: const Size.fromHeight(60),
-        child:  MyAppBar(funcBackBtn: funcBackBtn),
+        child: MyAppBar(funcBackBtn: funcBackBtn),
       ),
       body: body,
       bottomNavigationBar: const MyBottomNavigationBar(),

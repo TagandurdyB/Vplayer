@@ -7,7 +7,6 @@ class BasicOverlyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return Stack(
       alignment: Alignment.center,
       children: [

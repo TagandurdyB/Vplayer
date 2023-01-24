@@ -31,7 +31,7 @@ class ThemeModel {
       radius: Screen().width * 0.1,
       child: Icon(
         Icons.play_arrow,
-        color: Colors.black,
+        color: Colors.black26,
         size: Screen().width * 0.2,
       ));
   //dark//
@@ -40,10 +40,21 @@ class ThemeModel {
       radius: Screen().width * 0.1,
       child: Icon(
         Icons.play_arrow,
-        color: Colors.black,
+        color: Colors.black26,
         size: Screen().width * 0.2,
       ));
   /*brightness===================================*/
   static const Brightness lightBrightness = Brightness.dark;
   static const Brightness darkBrightness = Brightness.light;
+  /*Titles=======================================*/
+  //light//
+  static Text lightMainTitle = Text(
+    "Player",
+    style: TextStyle(fontSize: Screen().width * 0.1),
+  );
+  //dark//
+  static Text darkMainTitle = Text(
+    "Player",
+    style: TextStyle(fontSize: Screen().width * 0.1),
+  );
 }

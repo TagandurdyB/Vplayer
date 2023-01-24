@@ -1,13 +1,13 @@
-import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:local_player/Model/video_model.dart';
 
 class ProviderFile extends ChangeNotifier {
-  List<File> _videos = [];
-  List<File> get videos => _videos;
+  List<VideoObj> _videos = [];
+  List<VideoObj> get videos => _videos;
 
-  void changeVideos(List<File> files) {
-    _videos = files;
+  void changeVideos(List<VideoObj> objs) {
+    _videos =objs;
     notifyListeners();
   }
 }

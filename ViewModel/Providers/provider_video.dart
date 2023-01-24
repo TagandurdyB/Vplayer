@@ -1,20 +1,35 @@
 import 'package:flutter/widgets.dart';
-import 'package:local_player/Model/video_model.dart';
+
+import '../../Model/video_model.dart';
+import '../screen_values.dart';
 
 class ProviderVideo extends ChangeNotifier {
   final int _forbardBtnsSec = 3;
 
-  /* VideoObj _obj = VideoObj();
+  void _startVideo() {
+    tongleForvardBtns;
+    changeFullScreen(true);
+    changeShowSheed(true);
+    changePause(false);
+    notifyListeners();
+  }
+
+Widget _sheehChild=const SizedBox();
+Widget get sheehChild=>_sheehChild;
+
+void changeSheedChild(Widget child){
+  _sheehChild=child;
+  notifyListeners();
+}
+
+  void get startVideo => _startVideo();
+
+  VideoObj _obj = VideoObj();
   VideoObj get obj => _obj;
-
-  void changeObj(VideoObj newObj) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _obj = newObj;
-      notifyListeners();
-    });
-  }*/
-
-
+  void changeVideoObj(VideoObj ob) {
+    _obj = ob;
+    notifyListeners();
+  }
 
   bool _isForwardBtnsShow = false;
   bool get isForwardBtnsShow => _isForwardBtnsShow;
@@ -26,6 +41,31 @@ class ProviderVideo extends ChangeNotifier {
     _isShowSheed = isShow;
     notifyListeners();
   }
+
+  double _videoSheedHeight = 0.0;
+  double _videoSheedMaxHeight = 0.0;
+  double get videoSheedHeight => _videoSheedHeight;
+
+  void videoSheedMaxHeight(double height) {
+    _videoSheedMaxHeight = height;
+    height = double.parse(height.toStringAsFixed(2));
+    _videoSheedHeight = height;
+    notifyListeners();
+  }
+
+  void _sheedMaxHeight() {
+    _videoSheedHeight = _videoSheedMaxHeight;
+    notifyListeners();
+  }
+
+  void get changeSheedMaxHeight => _sheedMaxHeight();
+
+  void _sheedMinHeight() {
+    _videoSheedHeight = Screen().width * 0.25;
+    notifyListeners();
+  }
+
+  void get changeSheedMinHeight => _sheedMinHeight();
 
   bool _isVideoPause = false;
   bool get isVideoPause => _isVideoPause;
@@ -58,7 +98,6 @@ class ProviderVideo extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void changeForwardShow(bool i) {
     _isForwardBtnsShow = i;
     notifyListeners();
@@ -66,6 +105,11 @@ class ProviderVideo extends ChangeNotifier {
 
   void changeFullScreen(bool i) {
     _isFullScreen = i;
+    if (_isFullScreen) {
+      changeSheedMaxHeight;
+    } else {
+      changeSheedMinHeight;
+    }
     notifyListeners();
   }
 }
