@@ -37,15 +37,19 @@ class _ViewVideoSheedState extends State<ViewVideoSheed> {
     final providV = Provider.of<ProviderVideo>(context);
     final bool isShow = providV.isShowSheed;
     final bool isFull = providV.isFullScreen;
+        final bool isPortr = providV.isPortrait;
     return AnimatedContainer(
       color: Colors.red,
       duration: const Duration(milliseconds: 200),
-      height: isShow
+      height: !isPortr?
+       Screen().width
+      :
+      isShow
           ? isFull
               ? height
               : Screen().width * 0.25
           : 0.0,
-      width: Screen().width,
+      width: double.infinity,
       child: GestureDetector(
           onTap: _funcSheedHeight,
           child:

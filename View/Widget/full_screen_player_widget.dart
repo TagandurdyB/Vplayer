@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/View/Widget/video_forward_btns_w.dart';
+import 'package:local_player/View/Widget/video_skeeper_widget.dart';
+import 'package:local_player/ViewModel/screen_values.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -17,27 +19,46 @@ class VideoPlayerFullScreen extends StatelessWidget {
   bool isPause = false;
   bool isFullScreen = true;
 
+  bool isDoubleTab = false;
+
+///////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////
   @override
-  Widget build(BuildContext context) => videoController.value.isInitialized
-      ? AspectRatio(
-          aspectRatio: videoController.value.aspectRatio,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              MyContainer(
+  Widget build(BuildContext context) {
+    final providV = Provider.of<ProviderVideo>(context);
+    return videoController.value.isInitialized
+        ? AspectRatio(
+            aspectRatio: videoController.value.aspectRatio,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                GestureDetector(
+                  onDoubleTapDown: (detail) => Provider.of<ProviderVideo>(
+                          context,
+                          listen: false)
+                      .changeDoubleTabSide(detail.globalPosition.dx.round()),
+                  onDoubleTap: () => _onDoubleTab(context),
                   onTap: () => _showBtns(context),
-                  color: Colors.black,
-                  child: buildVideo()),
-              Visibility(
-                visible: Provider.of<ProviderVideo>(context).isForwardBtnsShow,
-                child: VideoForwardBtns(
-                  videoController: videoController,
-                  obj: obj,
+                  child: Container(color: Colors.black, child: buildVideo()),
                 ),
-              )
-            ],
-          ))
-      : const Center(child: CircularProgressIndicator(color: Colors.red));
+                Visibility(
+                  visible: providV.isForwardBtnsShow,
+                  child: VideoForwardBtns(
+                    videoController: videoController,
+                    obj: obj,
+                  ),
+                ),
+               
+                Visibility(
+                    visible: providV.isFastBtnsUse, child: const VideoSkeeper())
+              ],
+            ))
+        : const Center(child: CircularProgressIndicator(color: Colors.red));
+  }
+
+  void _onDoubleTab(BuildContext context) =>
+      Provider.of<ProviderVideo>(context, listen: false).doubleTab(videoController);
 
   void _showBtns(BuildContext context) =>
       Provider.of<ProviderVideo>(context, listen: false).tongleForvardBtns;

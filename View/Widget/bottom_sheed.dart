@@ -42,7 +42,9 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
   }
 
   Widget screenChange() {
-    isFull = Provider.of<ProviderVideo>(context).isFullScreen;
+    final providV = Provider.of<ProviderVideo>(context);
+    final bool isPortrait=providV.isPortrait;
+    isFull = providV.isFullScreen;
     if (isFull) {
       sheedHeight(1);
     } else {
@@ -60,7 +62,9 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
               buildMinBtns(),
             ],
           ),
-          buildSheedList(),
+          Visibility(
+            visible: isPortrait,
+            child: buildSheedList()),
         ],
       ),
     );
@@ -111,7 +115,7 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed>
 
   Widget buildSheedList() => Visibility(
       visible: isFull,
-      child: Flexible(
+      child: Expanded(
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: 10,

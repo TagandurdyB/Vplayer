@@ -12,19 +12,13 @@ class VievMainVideoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerF = Provider.of<ProviderFile>(context);
-    return Visibility(
-      visible: true,
-      child: Expanded(
-        flex: 6,
-        child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: providerF.videos.length,
-            itemBuilder: ((context, index) {
-              return VideoCardWidget(
-                obj: providerF.videos[index],
-              );
-            })),
-      ),
-    );
+    return ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        itemCount: providerF.videos.length,
+        itemBuilder: ((context, index) {
+          return VideoCardWidget(
+            obj: providerF.videos[index],
+          );
+        }));
   }
 }

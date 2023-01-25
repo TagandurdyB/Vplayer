@@ -26,7 +26,7 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
     super.initState();
     videoController = VideoPlayerController.file(widget.obj.videoFile!)
       ..addListener(() => setState(() {}))
-       ..setLooping(true)
+      //   ..setLooping(true)
       ..initialize().then((_) => videoController.play());
     //setLandscape();
   }
@@ -52,9 +52,14 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
   }
 
   void _fillVideoSize() {
-    bool isFullScreen = Provider.of<ProviderVideo>(context).isFullScreen;
+    final providV = Provider.of<ProviderVideo>(context);
+    bool isFullScreen = providV.isFullScreen;
+    final bool isPortrait = providV.isPortrait;
     final srceen = Screen();
-    if (isFullScreen) {
+    if (!isPortrait) {
+      screenHeight = srceen.width;
+      screenWidth = srceen.height;
+    } else if (isFullScreen) {
       screenHeight = srceen.width * 0.6;
       screenWidth = srceen.width;
     } else {
@@ -69,8 +74,8 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
     _fillVideoSize();
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      color: Colors.black,
+        duration: const Duration(milliseconds: 200),
+        color: Colors.black,
         height: screenHeight,
         width: screenWidth,
         child: VideoPlayerFullScreen(

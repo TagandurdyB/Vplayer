@@ -16,7 +16,12 @@ class LocalPlayerPage extends StatelessWidget {
     final providV = Provider.of<ProviderVideo>(context);
     final isShow = providV.isShowSheed;
     return ScaffoldAll(
-        funcBackBtn: isShow ? () => providV.changeShowSheed(false) : null,
+        funcBackBtn: isShow
+            ? () {
+                providV.changeFullScreen(false);
+                providV.changeShowSheed(false);
+              }
+            : null,
         body: LayoutBuilder(
           builder: (context, constraints) {
             height = constraints.maxHeight;
@@ -28,8 +33,11 @@ class LocalPlayerPage extends StatelessWidget {
   Widget buildBody(BuildContext context) {
     final providV = Provider.of<ProviderVideo>(context);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const VievMainVideoList(),
+        Visibility(
+            visible: !providV.isFullScreen,
+            child: const Expanded(child: VievMainVideoList())),
         Visibility(
             visible: providV.isShowSheed,
             child: ViewVideoSheed(bodyMaxHeight: height)),

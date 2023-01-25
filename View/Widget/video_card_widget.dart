@@ -87,7 +87,6 @@ class _VideoCardWidgetState extends State<VideoCardWidget> {
 
   void _settingModelBottomSheed(context) {
     final providV = Provider.of<ProviderVideo>(context, listen: false);
-    providV.changeShowSheed(true);
     providV.startVideo;
     providV.changeVideoObj(widget.obj);
     debugPrint("sheed open!");
