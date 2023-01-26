@@ -4,13 +4,15 @@ import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/ViewModel/Providers/provider_video.dart';
 import 'package:local_player/ViewModel/screen_values.dart';
 import 'package:provider/provider.dart';
+import '../../ViewModel/durations_vm.dart';
 import '/View/Widget/full_screen_player_widget.dart';
 import 'package:video_player/video_player.dart';
 
 // ignore: must_be_immutable
 class LandscapePlayerWidget extends StatefulWidget {
   VideoObj obj;
-  LandscapePlayerWidget({super.key, required this.obj});
+  VideoPlayerController videoController;
+  LandscapePlayerWidget({super.key, required this.obj,required this.videoController});
 
   @override
   State<LandscapePlayerWidget> createState() => _LandscapePlayerWidgetState();
@@ -24,19 +26,10 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
   @override
   void initState() {
     super.initState();
-    videoController = VideoPlayerController.file(widget.obj.videoFile!)
-      ..addListener(() => setState(() {}))
-      //   ..setLooping(true)
-      ..initialize().then((_) => videoController.play());
-    //setLandscape();
+    videoController = widget.videoController;
   }
 
-  @override
-  void dispose() {
-    setPortrate();
-    videoController.dispose();
-    super.dispose();
-  }
+
 
   void setLandscape() async {
     await SystemChrome.setEnabledSystemUIOverlays([]);
@@ -57,8 +50,8 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
     final bool isPortrait = providV.isPortrait;
     final srceen = Screen();
     if (!isPortrait) {
-      screenHeight = srceen.width;
-      screenWidth = srceen.height;
+      screenHeight = srceen.playerLandscapeHeight;
+      screenWidth = srceen.playerLandscapeWidth;
     } else if (isFullScreen) {
       screenHeight = srceen.width * 0.6;
       screenWidth = srceen.width;
@@ -74,7 +67,7 @@ class _LandscapePlayerWidgetState extends State<LandscapePlayerWidget> {
     _fillVideoSize();
 
     return AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: MyTimes().timePlayer,
         color: Colors.black,
         height: screenHeight,
         width: screenWidth,

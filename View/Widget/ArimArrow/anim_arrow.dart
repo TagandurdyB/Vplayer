@@ -20,6 +20,7 @@ bool isReverse(Direction direct) {
   }
 }
 
+// ignore: must_be_immutable
 class AnimArrow extends StatefulWidget {
   final Duration duration;
   final Direction direction;
@@ -32,7 +33,10 @@ class AnimArrow extends StatefulWidget {
   final Color activArrowColor;
   final int arrowCount;
   final Color areaBackgroundColor;
-  const AnimArrow(
+  final double arrowMargim;
+    final double arrowPadding;
+  MainAxisAlignment mainAxisAlignment;
+  AnimArrow(
       {super.key,
       this.areaRadius = 50,
       this.areaBackgroundColor = Colors.blue,
@@ -44,7 +48,11 @@ class AnimArrow extends StatefulWidget {
       this.arrowlenght = 0.6,
       this.direction = Direction.reight,
       this.title = "",
-      required this.duration});
+      required this.duration,
+      this.arrowMargim = 0.0,
+      this.arrowPadding=.0,
+      this.mainAxisAlignment=MainAxisAlignment.center, 
+       });
 
   @override
   State<AnimArrow> createState() => _AnimArrowState();
@@ -58,6 +66,7 @@ class _AnimArrowState extends State<AnimArrow>
   @override
   void initState() {
     super.initState();
+
     control = AnimationController(vsync: this, duration: widget.duration);
 
     control.repeat();
@@ -89,14 +98,14 @@ class _AnimArrowState extends State<AnimArrow>
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-                color: widget.areaBackgroundColor,
-                shape: BoxShape.circle,
-              ),
+          color: widget.areaBackgroundColor,
+          shape: BoxShape.circle,
+        ),
         //radius: widget.areaRadius,
-       
-       width: widget.areaRadius,
-       height: widget.areaRadius,
-       // foregroundColor: widget.areaForegroundColor,
+
+        width: widget.areaRadius,
+        height: widget.areaRadius,
+        // foregroundColor: widget.areaForegroundColor,
         child: Stack(
           fit: StackFit.expand,
           alignment: Alignment.center,
@@ -109,18 +118,27 @@ class _AnimArrowState extends State<AnimArrow>
         ));
   }
 
-  Widget buildHorizontalArriws() => Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: _arrows);
+  Widget buildHorizontalArriws() => Padding(
+    padding:  EdgeInsets.all(widget.arrowPadding),
+    child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: widget.mainAxisAlignment,
+        children: _arrows),
+  );
 
-  Widget buildVerticalArriws() => Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: _arrows);
+  Widget buildVerticalArriws() => Padding(
+     padding:  EdgeInsets.all(widget.arrowPadding),
+    child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: widget.mainAxisAlignment,
+        children: _arrows),
+  );
 
   List<Widget> get _arrows => List.generate(
-      widget.arrowCount, ((index) => buildActivPassiv(index == activeInd)));
+      widget.arrowCount,
+      ((index) => Padding(
+          padding: EdgeInsets.all(widget.arrowMargim),
+          child: buildActivPassiv(index == activeInd))));
 
   Widget buildActivPassiv(bool isActive) => SizedBox(
         height: isActive ? widget.activArrowSize : widget.passivArrowSize,

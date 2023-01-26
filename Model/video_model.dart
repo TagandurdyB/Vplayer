@@ -17,10 +17,10 @@ class VideoObj {
   double videoAreaWidth;
   double videoAreaHeight;
   AspectRatio? videoAspectRatio;
-  final VideoPlayerController? videoController;
+  final VideoPlayerController? fileController;
   VideoObj(
       {
-         this.videoController,
+         this.fileController,
         this.thumbnail,
         this.videoAspectRatio,
       this.index = -1,

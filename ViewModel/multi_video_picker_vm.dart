@@ -27,7 +27,7 @@ class MultipleVideoPicker {
         final String? path = result.paths[i];
         if (path != null) {
           objs.add(VideoObj(
-            videoController: VideoPlayerController.file(File(path)),
+            fileController: VideoPlayerController.file(File(path)),
             videoPath: path,
             videoFile: File(path),
             thumbnail: await getThumbnail(path),

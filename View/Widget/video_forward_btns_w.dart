@@ -45,31 +45,22 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
   }
 
   Widget btnGroup() {
-    return GestureDetector(
-      onDoubleTapDown: (detail) =>
-          Provider.of<ProviderVideo>(context, listen: false)
-              .changeDoubleTabSide(detail.globalPosition.dx.round()),
-      onDoubleTap: _onDoubleTab,
+    return MyContainer(
       onTap: _showBtns,
-      child: Container(
-        color: Colors.black54,
-        child: Stack(
-          fit: StackFit.expand,
-          alignment: Alignment.center,
-          children: [
-            buildVideoActions(),
-            Visibility(
-                visible: !Provider.of<ProviderVideo>(context).isFastBtnsUse,
-                child: buildCenterBtns()),
-            buildBottomGroup(),
-          ],
-        ),
+      color: Colors.black54,
+      child: Stack(
+        fit: StackFit.expand,
+        alignment: Alignment.center,
+        children: [
+          buildVideoActions(),
+          Visibility(
+              visible: !Provider.of<ProviderVideo>(context).isFastBtnsUse,
+              child: buildCenterBtns()),
+          buildBottomGroup(),
+        ],
       ),
     );
   }
-
-  void _onDoubleTab() => Provider.of<ProviderVideo>(context, listen: false)
-      .doubleTab(widget.videoController);
 
   void _showBtns() => Provider.of<ProviderVideo>(context, listen: false)
       .changeForwardShow(true);
@@ -83,7 +74,6 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                buildTimer(),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -93,8 +83,25 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
                           left: 8.0, right: 8.0, bottom: 5.0),
                       child: buildVideoIndicator(),
                     )),
-                    buildScreenChangeBtn(),
+                    const SizedBox(width: 10),
                   ],
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screen.width * 0.05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          buildTimer(),
+                          buildSound(),
+                        ],
+                      ),
+                      buildScreenChangeBtn(),
+                    ],
+                  ),
                 ),
               ],
             )),
@@ -108,6 +115,11 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
         ),
       );
 
+  Widget buildSound() => Icon(
+        Icons.volume_up_sharp,
+        color: Colors.grey[300],
+      );
+
   Widget buildScreenChangeBtn() {
     final bool isPortrait = Provider.of<ProviderVideo>(context).isPortrait;
     return MyContainer(
@@ -115,6 +127,7 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
         color: Colors.transparent,
         child: Icon(
           isPortrait ? Icons.fullscreen : Icons.fullscreen_exit,
+          size: isPortrait ? screen.width * 0.07 : screen.width * 0.1,
           color: Colors.grey[300],
         ));
   }
@@ -125,23 +138,22 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-     
   }
 
-void funcLandscape(){
-  setLandscape();
-Provider.of<ProviderVideo>(context, listen: false).changeOrientation(false);
-}
+  void funcLandscape() {
+    setLandscape();
+    Provider.of<ProviderVideo>(context, listen: false).changeOrientation(false);
+  }
 
   void setPortrate() async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
   }
-void funcPortrate(){
-  setPortrate();
-Provider.of<ProviderVideo>(context, listen: false).changeOrientation(true);
-}
 
+  void funcPortrate() {
+    setPortrate();
+    Provider.of<ProviderVideo>(context, listen: false).changeOrientation(true);
+  }
 
   Widget buildCenterBtns() {
     return Row(

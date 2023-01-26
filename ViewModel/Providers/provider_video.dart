@@ -2,25 +2,26 @@ import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../Model/video_model.dart';
+import '../durations_vm.dart';
 import '../screen_values.dart';
 import '../time_converter.dart';
 
 class ProviderVideo extends ChangeNotifier {
   final int _forbardBtnsSec = 3;
 
-  void _startVideo() {
-    tongleForvardBtns;
-    changeFullScreen(true);
-    changeShowSheed(true);
-    changePause(false);
-    notifyListeners();
-  }
-
   Widget _sheehChild = const SizedBox();
   Widget get sheehChild => _sheehChild;
 
   void changeSheedChild(Widget child) {
     _sheehChild = child;
+    notifyListeners();
+  }
+
+  void _startVideo() {
+    tongleForvardBtns;
+    changeFullScreen(true);
+    changeShowSheed(true);
+    changePause(false);
     notifyListeners();
   }
 
@@ -43,10 +44,32 @@ class ProviderVideo extends ChangeNotifier {
   }
 
   bool _isDoubleTabLeft = false;
-  bool get isDoubleTabLeft => _isDoubleTabLeft;
+
+  bool? _isDragUp = false;
 
   void changeDoubleTabSide(int tabX) {
-    _isDoubleTabLeft = tabX < Screen().width * 0.5;
+    if (tabX < Screen().width * 0.5 && _isPortrait) {
+      _isDoubleTabLeft = true;
+    } else if (tabX < Screen().height * 0.5 && !_isPortrait) {
+      _isDoubleTabLeft = true;
+    } else {
+      _isDoubleTabLeft = false;
+    }
+    notifyListeners();
+  }
+
+  void changeDragDirection(int dragYStart, int dragYEnd) {
+    if (dragYEnd - dragYStart > 70 && _isPortrait) {
+      _isDragUp = false;
+    } else if (dragYStart - dragYEnd > 70 && _isPortrait) {
+      _isDragUp = true;
+    } else if (dragYEnd - dragYStart > 70 && !_isPortrait) {
+      _isDragUp = false;
+    } else if (dragYStart - dragYEnd > 70 && !_isPortrait) {
+      _isDragUp = null;
+    } else {
+      _isDragUp = null;
+    }
     notifyListeners();
   }
 
@@ -56,16 +79,51 @@ class ProviderVideo extends ChangeNotifier {
   bool _isForward = false;
   bool get isForward => _isForward;
 
+  bool _isUpward = false;
+  bool get isUpward => _isUpward;
+
+  bool _isDownward = false;
+  bool get isDownward => _isDownward;
+
+  void _tabUpward() {
+    _isUpward = true;
+    notifyListeners();
+    _closeArrowAnim();
+  }
+
+  void _tabDownward() {
+    _isDownward = true;
+    /* Future.delayed(MyTimes().timeArrow).then((_) {
+      _isFullScreen = !_isPortrait;
+      _isPortrait = true;
+    });*/
+    notifyListeners();
+    _closeArrowAnim();
+  }
+
+  void _dragVertical() {
+    _isFastBtnsUse = true;
+    if (_isDragUp == null) {
+
+    } else if (_isDragUp!) {
+      _tabUpward();
+    } else {
+      _tabDownward();
+    }
+  }
+
+  void get dragVertical => _dragVertical();
+
   void _doubleTab(VideoPlayerController control) {
     _isFastBtnsUse = true;
-    const Duration seekTile = Duration(seconds: 10);
+    final Duration seekTime = MyTimes().timeSeekTo;
     Duration position = TimeConterter(control).videoPosition;
     if (_isDoubleTabLeft) {
       _tabBackward();
-      position -= seekTile;
+      position -= seekTime;
     } else {
       _tabForward();
-      position += seekTile;
+      position += seekTime;
     }
     control.seekTo(position);
   }
@@ -75,7 +133,7 @@ class ProviderVideo extends ChangeNotifier {
   void _tabBackward() {
     _isBackward = true;
     notifyListeners();
-    _closeTabAnim();
+    _closeArrowAnim();
   }
 
   void get tabBackward => _tabBackward();
@@ -83,15 +141,17 @@ class ProviderVideo extends ChangeNotifier {
   void _tabForward() {
     _isForward = true;
     notifyListeners();
-    _closeTabAnim();
+    _closeArrowAnim();
   }
 
   void get tabForward => _tabForward();
 
-  void _closeTabAnim() {
-    Future.delayed(const Duration(milliseconds: 500)).then((value) {
+  void _closeArrowAnim() {
+    Future.delayed(MyTimes().timeArrow).then((value) {
       _isBackward = false;
       _isForward = false;
+      _isUpward = false;
+      _isDownward = false;
       _isFastBtnsUse = false;
       notifyListeners();
     });
@@ -114,9 +174,6 @@ class ProviderVideo extends ChangeNotifier {
   }
 
 /////////////////////////////////////////////////////////////
-  bool _isForwardBtnsShow = false;
-  bool get isForwardBtnsShow => _isForwardBtnsShow;
-
   bool _isShowSheed = false;
   bool get isShowSheed => _isShowSheed;
 
@@ -125,30 +182,16 @@ class ProviderVideo extends ChangeNotifier {
     notifyListeners();
   }
 
-  double _videoSheedHeight = 0.0;
-  double _videoSheedMaxHeight = 0.0;
-  double get videoSheedHeight => _videoSheedHeight;
+  bool _isFullScreen = true;
+  bool get isFullScreen => _isFullScreen;
 
-  void videoSheedMaxHeight(double height) {
-    _videoSheedMaxHeight = height;
-    height = double.parse(height.toStringAsFixed(2));
-    _videoSheedHeight = height;
+  void changeFullScreen(bool i) {
+    _isFullScreen = i;
     notifyListeners();
   }
 
-  void _sheedMaxHeight() {
-    _videoSheedHeight = _videoSheedMaxHeight;
-    notifyListeners();
-  }
-
-  void get changeSheedMaxHeight => _sheedMaxHeight();
-
-  void _sheedMinHeight() {
-    _videoSheedHeight = Screen().width * 0.25;
-    notifyListeners();
-  }
-
-  void get changeSheedMinHeight => _sheedMinHeight();
+  bool _isForwardBtnsShow = false;
+  bool get isForwardBtnsShow => _isForwardBtnsShow;
 
   bool _isVideoPause = false;
   bool get isVideoPause => _isVideoPause;
@@ -182,19 +225,6 @@ class ProviderVideo extends ChangeNotifier {
 
   void changeForwardShow(bool i) {
     _isForwardBtnsShow = i;
-    notifyListeners();
-  }
-
-  bool _isFullScreen = false;
-  bool get isFullScreen => _isFullScreen;
-
-  void changeFullScreen(bool i) {
-    _isFullScreen = i;
-    if (_isFullScreen) {
-      changeSheedMaxHeight;
-    } else {
-      changeSheedMinHeight;
-    }
     notifyListeners();
   }
 }

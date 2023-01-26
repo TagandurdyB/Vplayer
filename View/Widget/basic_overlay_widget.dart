@@ -3,7 +3,9 @@ import 'package:video_player/video_player.dart';
 
 class BasicOverlyWidget extends StatelessWidget {
   final VideoPlayerController videoController;
-  const BasicOverlyWidget({super.key, required this.videoController});
+  final bool allowScrubbing;
+  const BasicOverlyWidget(
+      {super.key, required this.videoController, this.allowScrubbing = true});
 
   @override
   Widget build(BuildContext context) {
@@ -16,5 +18,5 @@ class BasicOverlyWidget extends StatelessWidget {
   }
 
   Widget buildIndicator() =>
-      VideoProgressIndicator(videoController, allowScrubbing: true);
+      VideoProgressIndicator(videoController, allowScrubbing: allowScrubbing);
 }

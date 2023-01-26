@@ -17,10 +17,6 @@ class VideoCardWidget extends StatefulWidget {
 }
 
 class _VideoCardWidgetState extends State<VideoCardWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +85,6 @@ class _VideoCardWidgetState extends State<VideoCardWidget> {
     final providV = Provider.of<ProviderVideo>(context, listen: false);
     providV.startVideo;
     providV.changeVideoObj(widget.obj);
-    debugPrint("sheed open!");
-
+    debugPrint("sheed open! obj:=${widget.obj.videoText}");
   }
 }

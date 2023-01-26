@@ -34,22 +34,15 @@ class VideoPlayerFullScreen extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 GestureDetector(
-                  onDoubleTapDown: (detail) => Provider.of<ProviderVideo>(
-                          context,
-                          listen: false)
-                      .changeDoubleTabSide(detail.globalPosition.dx.round()),
-                  onDoubleTap: () => _onDoubleTab(context),
-                  onTap: () => _showBtns(context),
                   child: Container(color: Colors.black, child: buildVideo()),
                 ),
-                Visibility(
-                  visible: providV.isForwardBtnsShow,
+                Offstage(
+                  offstage: !providV.isForwardBtnsShow,
                   child: VideoForwardBtns(
                     videoController: videoController,
                     obj: obj,
                   ),
                 ),
-               
                 Visibility(
                     visible: providV.isFastBtnsUse, child: const VideoSkeeper())
               ],
@@ -57,19 +50,18 @@ class VideoPlayerFullScreen extends StatelessWidget {
         : const Center(child: CircularProgressIndicator(color: Colors.red));
   }
 
-  void _onDoubleTab(BuildContext context) =>
-      Provider.of<ProviderVideo>(context, listen: false).doubleTab(videoController);
+  Widget buildVideoGroup() => Stack(children: []);
 
-  void _showBtns(BuildContext context) =>
-      Provider.of<ProviderVideo>(context, listen: false).tongleForvardBtns;
 
   Widget buildVideo() => buildVideoPlayer();
+
   Widget buildVideoPlayer() => Center(
         child: buildFullScreen(
             child: AspectRatio(
                 aspectRatio: videoController.value.aspectRatio,
                 child: VideoPlayer(videoController))),
       );
+
   Widget buildFullScreen({
     required Widget child,
   }) {

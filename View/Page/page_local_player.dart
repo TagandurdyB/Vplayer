@@ -7,9 +7,7 @@ import '../Scaffold/scaffold_all.dart';
 
 // ignore: must_be_immutable
 class LocalPlayerPage extends StatelessWidget {
-  LocalPlayerPage({super.key});
-
-  double height = 0.0;
+  const LocalPlayerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +20,19 @@ class LocalPlayerPage extends StatelessWidget {
                 providV.changeShowSheed(false);
               }
             : null,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            height = constraints.maxHeight;
-            return buildBody(context);
-          },
-        ));
+        body: buildBody(context));
   }
 
   Widget buildBody(BuildContext context) {
     final providV = Provider.of<ProviderVideo>(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
-        Visibility(
-            visible: !providV.isFullScreen,
-            child: const Expanded(child: VievMainVideoList())),
-        Visibility(
-            visible: providV.isShowSheed,
-            child: ViewVideoSheed(bodyMaxHeight: height)),
+        // offstage: !providV.isFullScreen,
+        VievMainVideoList(),
+        Offstage(
+            offstage: !providV.isShowSheed,
+            child: const ViewVideoSheed()),
       ],
     );
   }

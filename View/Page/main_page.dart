@@ -18,9 +18,16 @@ class MainPage extends StatelessWidget {
             ElevatedButton(
                 onPressed: () => MultipleVideoPicker().repick(context, 2),
                 child: const Text("Local Player")),
+                const Divider(height: 20,color: Colors.white,),
                 ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, Rout.pageDemo),
-                child: const Text("Demo Page")),
+                onPressed: () => Navigator.pushNamed(context, Rout.pageDemoAnimArrow),
+                child: const Text("Anim Arrows")),
+                ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, Rout.pageDemoVideoSheed),
+                child: const Text("Video Sheed")),
+                ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, Rout.pageDemoNexPlayer),
+                child: const Text("Next Player")),
           ]),
     );
   }

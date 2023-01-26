@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../ViewModel/screen_values.dart';
-import '../Widget/ArimArrow/anim_arrow.dart';
+import '../ViewModel/screen_values.dart';
+import '../View/Widget/ArimArrow/anim_arrow.dart';
 
-class DemoPage extends StatefulWidget {
-  const DemoPage({super.key});
+class AnimArrowPage extends StatefulWidget {
+  const AnimArrowPage({super.key});
 
   @override
-  State<DemoPage> createState() => _DemoPageState();
+  State<AnimArrowPage> createState() => _AnimArrowPageState();
 }
 
-class _DemoPageState extends State<DemoPage> {
+class _AnimArrowPageState extends State<AnimArrowPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +85,16 @@ class _DemoPageState extends State<DemoPage> {
                 right: -100,
                 child: Visibility(
                     visible: isForward, child: buildTextSec(Direction.reight))),
+            Positioned(
+                top: -200,
+                child: Visibility(
+                    visible: true,
+                    child: buildFastBtnVertical(Direction.down))),
+            Positioned(
+                bottom: -200,
+                child: Visibility(
+                    visible: false, child: buildFastBtnVertical(Direction.up))),
+         
           ],
         ),
       );
@@ -92,12 +102,12 @@ class _DemoPageState extends State<DemoPage> {
   Widget buildTextSec(Direction direct) => Stack(
         alignment: Alignment.center,
         children: [
-          buildFastBtn(direct),
+          buildFastBtnHorizontal(direct),
           Positioned(top: Screen().width * 0.3, child: const Text("10 sec"))
         ],
       );
 
-  Widget buildFastBtn(Direction direct) => AnimArrow(
+  Widget buildFastBtnHorizontal(Direction direct) => AnimArrow(
         arrowCount: 3,
         areaRadius: Screen().width * 0.8,
         arrowlenght: 0.9,
@@ -110,4 +120,19 @@ class _DemoPageState extends State<DemoPage> {
         duration: const Duration(milliseconds: 300),
       );
 
+  Widget buildFastBtnVertical(Direction direct) => AnimArrow(
+        mainAxisAlignment:direct==Direction.up?MainAxisAlignment.start:MainAxisAlignment.end,
+        arrowPadding: Screen().width*0.1,
+        arrowMargim: Screen().width*0.01,
+        arrowCount: 5,
+        areaRadius: Screen().width,
+        arrowlenght: 0.9,
+        passivArrowSize: Screen().width * 0.04,
+        activArrowSize: Screen().width * 0.045,
+        direction: direct,
+        areaBackgroundColor: Colors.white60,
+        activArrowColor: Colors.white,
+        passivArrowColor: Colors.white70,
+        duration: const Duration(milliseconds: 300),
+      );
 }
