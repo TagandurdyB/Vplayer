@@ -28,6 +28,9 @@ class MainPage extends StatelessWidget {
                 ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, Rout.pageDemoNexPlayer),
                 child: const Text("Next Player")),
+                  ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, Rout.pageDemoQualityPlayer),
+                child: const Text("Quality Player")),
           ]),
     );
   }

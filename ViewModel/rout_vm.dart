@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:local_player/Demo/anim_arrow_page.dart';
 import 'package:local_player/Demo/demo_my_sheed.dart';
 import '../Demo/demo_player_nex.dart';
+import '../Demo/demo_player_quality.dart';
 import '../View/Page/logo_page.dart';
 import '../View/Page/main_page.dart';
 import '../View/Page/page_local_player.dart';
@@ -15,6 +15,7 @@ class Rout {
   static const String pageDemoAnimArrow = "/DemoPageAnimArrow";
   static const String pageDemoVideoSheed = "/DemoPageVideoSheed";
   static const String pageDemoNexPlayer = "/DemoPageNextPlayer";
+  static const String pageDemoQualityPlayer = "/DemoPageDemoQualityPlayer";
 
   static Map<String, Widget Function(dynamic)> pages = {
     pageLogo: (context) => const LogoPage(),
@@ -23,5 +24,7 @@ class Rout {
     pageDemoAnimArrow: (context) => const AnimArrowPage(),
     pageDemoVideoSheed: (context) => const MyVideoSheed(),
     pageDemoNexPlayer:(context)=>VideoDemoNext(),
+pageDemoQualityPlayer:(context)=>
+    VideoPlayerApp(),
   };
 }

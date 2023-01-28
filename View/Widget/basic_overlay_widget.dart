@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:local_player/ViewModel/Providers/provider_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class BasicOverlyWidget extends StatelessWidget {
-  final VideoPlayerController videoController;
   final bool allowScrubbing;
-  const BasicOverlyWidget(
-      {super.key, required this.videoController, this.allowScrubbing = true});
+  const BasicOverlyWidget({super.key, this.allowScrubbing = true});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        buildIndicator(),
-      ],
-    );
+    return VideoProgressIndicator(Provider.of<ControlVideo>(context).control,
+        allowScrubbing: allowScrubbing);
   }
-
-  Widget buildIndicator() =>
-      VideoProgressIndicator(videoController, allowScrubbing: allowScrubbing);
 }

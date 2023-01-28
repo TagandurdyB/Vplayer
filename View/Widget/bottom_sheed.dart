@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_player/Model/video_model.dart';
 import 'package:local_player/View/Widget/basic_overlay_widget.dart';
+import 'package:local_player/ViewModel/Providers/provider_controller.dart';
+import 'package:local_player/ViewModel/Providers/provider_orientation.dart';
 import 'package:video_player/video_player.dart';
 import '../../ViewModel/durations_vm.dart';
 import '/ViewModel/Providers/provider_video.dart';
@@ -20,21 +22,49 @@ class MyBottomVideoSheed extends StatefulWidget {
 
 class _MyBottomVideoSheedState extends State<MyBottomVideoSheed> {
   double sheedHight = Screen().height;
-  late VideoPlayerController videoControl;
-
+  // late VideoPlayerController videoControl;
+/*
   void initState() {
     super.initState();
-    videoControl = VideoPlayerController.file(widget.obj.videoFile!)
+    if(widget.obj.videoUrl!=""){
+      videoControl = VideoPlayerController.network(widget.obj.videoUrl)
       ..addListener(() => setState(() {}))
       //   ..setLooping(true)
       ..initialize().then((_) => videoControl.play());
-    //setLandscape();
+    }
+    else{
+    videoControl = VideoPlayerController.file(widget.obj.videoFile!)
+     
+      //   ..setLooping(true)
+      ..initialize().then((_) => videoControl.play())
+       ..addListener(() => setState(() {}))
+      ;
+    }
+    videoControl.setVolume(0.5);
   }
 
   @override
   void dispose() {
-    setPortrate();
     videoControl.dispose();
+    super.dispose();
+  }
+*/
+
+  @override
+  void initState() {
+    super.initState();
+    /* WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+     // Provider.of<ControlVideo>(context,listen: false).startVideo(() => setState(() {}));
+    
+    });*/
+  }
+
+  @override
+  void dispose() {
+    /* WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+     Provider.of<ControlVideo>(context,listen: false).dispos;
+    });*/
+    ControlVideo().dispos;
     super.dispose();
   }
 
@@ -47,66 +77,38 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Provider.of<ProviderVideo>(context, listen: false)
-          .changeFullScreen(true),
-      child: screenChange(),
-    );
-  }
-
-  void sheedHeight(double sheedHightDegry) {
-    setState(() {
-      sheedHight = Screen().height * sheedHightDegry;
-    });
+    return screenChange();
   }
 
   Widget screenChange() {
     final providV = Provider.of<ProviderVideo>(context);
     final bool isPortrait = providV.isPortrait;
     isFull = providV.isFullScreen;
-    if (isFull) {
-      sheedHeight(1);
-    } else {
-      sheedHeight(0.1);
-    }
-    return Container(
-      height: sheedHight,
-      width: double.infinity,
-      color: Colors.grey[700],
-      child: Column(
-        children: [
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              SafeArea(
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: providV.isPortrait ? -1 : 1,
-                        child: buildVideoDedector())
-                  ],
-                ),
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            SafeArea(
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: isPortrait ? -1 : 1, child: buildVideoDedector())
+                ],
               ),
-              Positioned.fill(child: buildMinBtns()),
-              buildVideoIndicator(),
-            ],
-          ),
-          Visibility(visible: isPortrait, child: buildSheedList()),
-        ],
-      ),
+            ),
+            Positioned.fill(child: buildMinBtns()),
+            buildVideoIndicator(),
+          ],
+        ),
+        Visibility(visible: isPortrait, child: buildSheedList()),
+      ],
     );
   }
 
   Widget buildVideoIndicator() => Visibility(
         visible: !isFull,
-        child: Row(
-          children: [
-            Expanded(
-              child: BasicOverlyWidget(
-                  videoController: videoControl, allowScrubbing: false),
-            ),
-          ],
-        ),
+        child: const BasicOverlyWidget(allowScrubbing: false),
       );
 
   Widget buildMinBtns() => Visibility(
@@ -123,6 +125,8 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed> {
       );
 
   Widget buildVideoDedector() {
+    
+      Provider.of<ControlVideo>(context).control.addListener(()=>setState((){}));
     final providV = Provider.of<ProviderVideo>(context, listen: false);
     final providVget = Provider.of<ProviderVideo>(context);
     return GestureDetector(
@@ -133,38 +137,35 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed> {
           dragEndY = detal.globalPosition.dy;
         },
         onVerticalDragEnd: (detal) {
-          if(providVget.isFullScreen)
-          {providV.changeDragDirection(dragStartY.round(), dragEndY.round());
-          providV.dragVertical;
-          if (dragEndY - dragStartY > 70) {
-            debugPrint(" $dragStartY    $dragEndY  ");
-            waiterFunc(doing: () {
-              providV.changeFullScreen(!providV.isPortrait);
-              providV.changeOrientation(true);
-              setPortrate();
-            });
+          if (providVget.isFullScreen) {
+            providV.changeDragDirection(dragStartY.round(), dragEndY.round());
+            providV.dragVertical;
+            if (dragEndY - dragStartY > 70) {
+              debugPrint(" $dragStartY    $dragEndY  ");
+              waiterFunc(doing: () {
+                providV.changeFullScreen(!providV.isPortrait);
+                MyOrientation(context).setPortraitUp;
+              });
+            }
+            if (dragStartY - dragEndY > 70) {
+              debugPrint(" $dragStartY    $dragEndY  ");
+              waiterFunc(doing: () {
+                //  providV.changeFullScreen(!providV.isPortrait);
+                MyOrientation(context).setLandscape;
+              });
+            }
           }
-          if (dragStartY - dragEndY > 70) {
-            debugPrint(" $dragStartY    $dragEndY  ");
-            waiterFunc(doing: () {
-              //  providV.changeFullScreen(!providV.isPortrait);
-              providV.changeOrientation(false);
-              setLandscape();
-            });
-          }}
         },
         onDoubleTapDown: (detail) =>
             providV.changeDoubleTabSide(detail.globalPosition.dx.round()),
         onDoubleTap: () {
-          debugPrint("sadjkasjdkj:=${providVget.isFullScreen}");
-          if (providVget.isFullScreen) {
-            _onDoubleTab(context);
+          if (providV.isFullScreen) {
+            _onDoubleTab();
           }
         },
-        onTap: () => _showBtns(context),
+        onTap: () => _showBtns(),
         //    child: PortraitPlayerWidget(obj: widget.obj));
-        child: LandscapePlayerWidget(
-            obj: widget.obj, videoController: videoControl));
+        child: LandscapePlayerWidget(obj: widget.obj));
   }
 
   void waiterFunc({required Function doing}) {
@@ -173,33 +174,22 @@ class _MyBottomVideoSheedState extends State<MyBottomVideoSheed> {
     });
   }
 
-  void setPortrate() async {
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    await SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
-  }
+  void _onDoubleTab() => Provider.of<ProviderVideo>(context, listen: false)
+      .doubleTab(Provider.of<ControlVideo>(context,listen: false).control);
 
-  void setLandscape() async {
-    await SystemChrome.setEnabledSystemUIOverlays([]);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
-  void _onDoubleTab(BuildContext context) =>
-      Provider.of<ProviderVideo>(context, listen: false)
-          .doubleTab(videoControl);
-
-  void _showBtns(BuildContext context) =>
+  void _showBtns() {
       Provider.of<ProviderVideo>(context, listen: false).tongleForvardBtns;
-
+  }
   Widget bulidCloseBtn() => IconButton(
       icon: const Icon(Icons.close, color: Colors.white),
-      onPressed: () {
-        final providV = Provider.of<ProviderVideo>(context, listen: false);
-        providV.changeShowSheed(false);
-        providV.changeFullScreen(true);
-      });
+      onPressed: _closeFunc);
+
+  void _closeFunc() {
+    final providV = Provider.of<ProviderVideo>(context, listen: false);
+    providV.changeShowSheed(false);
+    providV.changeFullScreen(true);
+    providV.playerAutoSize;
+  }
 
   Widget buildSheedList() => Visibility(
       visible: isFull,

@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:local_player/Model/video_model.dart';
+import 'package:local_player/ViewModel/Providers/provider_controller.dart';
 import 'package:local_player/ViewModel/Providers/provider_theme.dart';
 import '/View/Widget/my_container.dart';
 import '/ViewModel/Providers/provider_video.dart';
@@ -17,7 +17,6 @@ class VideoCardWidget extends StatefulWidget {
 }
 
 class _VideoCardWidgetState extends State<VideoCardWidget> {
-
   @override
   Widget build(BuildContext context) {
     final screen = Screen();
@@ -82,9 +81,19 @@ class _VideoCardWidgetState extends State<VideoCardWidget> {
   }
 
   void _settingModelBottomSheed(context) {
+
     final providV = Provider.of<ProviderVideo>(context, listen: false);
-    providV.startVideo;
+    final providC = Provider.of<ControlVideo>(context, listen: false);
+    // providV.changeShowSheed(false);
+    //ControlVideo().dispos;
+    providV.changeShowSheed(false);
     providV.changeVideoObj(widget.obj);
-    debugPrint("sheed open! obj:=${widget.obj.videoText}");
+
+    providV.startVideo;
+    providV.playerAutoSize;
+    providV.resetVolume;
+    providC.startVideo(widget.obj.videoFile!);
+
+    providV.changeShowSheed(true);
   }
 }

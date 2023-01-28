@@ -32,7 +32,7 @@ class VideoObj {
       this.videoPath = "",
       this.videoAsset = "",
       this.videoText = "",
-      this.videoUrl = ""});
+      this.videoUrl = ''});
 
   void changeWidth(double width) {
     videoAreaWidth = width;

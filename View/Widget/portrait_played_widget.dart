@@ -56,6 +56,6 @@ class _PortraitPlayerWidgetState extends State<PortraitPlayerWidget> {
         height: screenHeight,
         width: screenWidth,
         child: VideoPlayerFullScreen(
-            obj: widget.obj, videoController: videoController));
+            obj: widget.obj));
   }
 }

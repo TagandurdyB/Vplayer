@@ -2,13 +2,9 @@ double _screenWidth = 100.0;
 double _screenHeight = 0.0;
 double _videoWidth = 0.0;
 double _videoHeight = 0.0;
-double _playerWidth = 0.0;
-double _playerHeight = 0.0;
 
 class Screen {
-  double _roundSize(d) {
-    return double.parse(d.toStringAsFixed(2));
-  }
+  double _roundSize(d) => double.parse(d.toStringAsFixed(2));
 
   double get width => _screenWidth;
   double get height => _screenHeight;
@@ -26,14 +22,12 @@ class Screen {
   void changePlayerHeight(double i) => _playerHeight = _roundSize(i);
 */
 
+  double get playerMinWidth => _screenWidth * 0.4;
+  double get playerMinHeight => _screenWidth * 0.25;
 
-  double get playerMinWidth => _screenWidth*0.4;
-  double get playerMinHeight => _screenWidth*0.25;
+  double get playerPortraitWidth => _screenWidth;
+  double get playerPortraitHeight => _screenWidth * 0.6;
 
-  double get playerMaxWidth => _screenWidth;
-  double get playerMaxHeight => _screenWidth*0.6;
-
-  double get playerLandscapeWidth => _screenWidth*1.6;
+  double get playerLandscapeWidth => _screenWidth * 1.6;
   double get playerLandscapeHeight => _screenWidth;
-
 }

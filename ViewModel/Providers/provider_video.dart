@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:local_player/ViewModel/Providers/provider_orientation.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../Model/video_model.dart';
@@ -18,7 +20,7 @@ class ProviderVideo extends ChangeNotifier {
   }
 
   void _startVideo() {
-    tongleForvardBtns;
+    //tongleForvardBtns;
     changeFullScreen(true);
     changeShowSheed(true);
     changePause(false);
@@ -46,6 +48,7 @@ class ProviderVideo extends ChangeNotifier {
   bool _isDoubleTabLeft = false;
 
   bool? _isDragUp = false;
+  bool? get isDragUp => _isDragUp;
 
   void changeDoubleTabSide(int tabX) {
     if (tabX < Screen().width * 0.5 && _isPortrait) {
@@ -93,22 +96,18 @@ class ProviderVideo extends ChangeNotifier {
 
   void _tabDownward() {
     _isDownward = true;
-    /* Future.delayed(MyTimes().timeArrow).then((_) {
-      _isFullScreen = !_isPortrait;
-      _isPortrait = true;
-    });*/
     notifyListeners();
     _closeArrowAnim();
   }
 
   void _dragVertical() {
-    _isFastBtnsUse = true;
-    if (_isDragUp == null) {
-
-    } else if (_isDragUp!) {
-      _tabUpward();
-    } else {
-      _tabDownward();
+    if (_isDragUp != null) {
+      _isFastBtnsUse = true;
+      if (_isDragUp!) {
+        _tabUpward();
+      } else {
+        _tabDownward();
+      }
     }
   }
 
@@ -227,4 +226,152 @@ class ProviderVideo extends ChangeNotifier {
     _isForwardBtnsShow = i;
     notifyListeners();
   }
+
+  void _changeForwardShowTrue() {
+    _isForwardBtnsShow = true;
+    _closeForwardBtnsTimer();
+    notifyListeners();
+  }
+
+  void get changeForwardShowTrue => _changeForwardShowTrue();
+  //WillPop//////////////////////////////////////////////////////////////////
+
+  bool _backFunc() {
+    bool result = true;
+    if (_isShowSheed && _isFullScreen) {
+      _isFullScreen = false;
+      _playerAutoSize();
+      result = false;
+    } else if (_isShowSheed) {
+      _isShowSheed = false;
+      _isFullScreen = true;
+      _portraitMod();
+      result = false;
+    }
+    notifyListeners();
+    return result;
+  }
+
+  bool get backFunc => _backFunc();
+
+  Future<bool> _willPop(BuildContext context) async {
+    Future<bool> result = Future.value(false);
+    if (!_isPortrait) {
+      MyOrientation(context).setPortraitUp;
+      _isFullScreen = true;
+      _isPortrait = true;
+    } else if (_backFunc()) {
+      result = Future.value(true);
+    }
+    notifyListeners();
+    return result;
+  }
+
+  Future<bool> willPop(BuildContext context) => _willPop(context);
+  //Volume/////////////////////////////////////////////////////////////////////////
+  double _setVolume = 50;
+  double _oldVolume = 0;
+  bool _isOn = true;
+
+  void _resetVolume() {
+    _setVolume = 50;
+    _oldVolume = 0;
+    notifyListeners();
+  }
+
+  void get resetVolume => _resetVolume();
+
+  double get setVolume => _setVolume;
+  double get oldVolume => _oldVolume;
+
+  void changeVolume(double val) {
+    _setVolume = val;
+    notifyListeners();
+  }
+
+  void _tongelVolume() {
+    _changeForwardShowTrue();
+    _isOn = !_isOn;
+    if (_isOn) {
+      _setVolume = _oldVolume;
+      _oldVolume = 0;
+    } else {
+      _oldVolume = _setVolume;
+      _setVolume = 0;
+    }
+    notifyListeners();
+  }
+
+  void get tongleVolume => _tongelVolume();
+  /////////////////////////////////////////////////////////////////////////////////
+  //PlayerSize////////////////////////////////////////////////////////////////////////
+  double _playerHeight = Screen().playerPortraitHeight;
+  double _playerWidth = Screen().playerPortraitWidth;
+
+  double get playerHeight => _playerHeight;
+  double get playerWidth => _playerWidth;
+
+  bool _isMinToPortrait = true;
+
+  void _minMod() {
+    _isMinToPortrait = true;
+    _playerHeight = Screen().playerMinHeight;
+    _playerWidth = Screen().playerMinWidth;
+    notifyListeners();
+  }
+
+  void get playerMinMod => _minMod();
+
+  void _portraitMod() {
+    _playerHeight = Screen().playerPortraitHeight;
+    _playerWidth = Screen().playerPortraitWidth;
+    notifyListeners();
+  }
+
+  void get playerPortraitMod => _portraitMod();
+
+  void _portraitThenMod() {
+    _isForwardBtnsShow = false;
+    Future.delayed(MyTimes().timeSheed).then((_) {
+      _portraitMod();
+      _changeForwardShowTrue();
+      //   _isForwardBtnsShow=true;
+    });
+  }
+
+  void get playerPortraitThenMod => _portraitThenMod();
+
+  void _landscapeMod() {
+    _isMinToPortrait = false;
+    _playerHeight = Screen().playerLandscapeHeight;
+    _playerWidth = Screen().playerLandscapeWidth;
+    notifyListeners();
+  }
+
+  void get playerLandscapeMod => _landscapeMod();
+
+  void _landscapeThenMod() => Future.delayed(MyTimes().timeSheed).then((_) {
+        _landscapeMod();
+      });
+
+  void get playerlandscapeThenMod => _landscapeThenMod();
+
+  void _playerAutoSize() {
+    debugPrint(
+        "isFull:=$_isFullScreen Portrate:=$_isPortrait  IsMinToPortrait:=$_isMinToPortrait");
+    if (!_isFullScreen && _isPortrait) {
+      _minMod();
+    } else if (_isFullScreen && _isPortrait && !_isMinToPortrait) {
+      _portraitMod();
+    } else if (_isFullScreen && _isPortrait && _isMinToPortrait) {
+      _portraitThenMod();
+    } else if (isFullScreen && !_isPortrait) {
+      _landscapeMod();
+    }
+    notifyListeners();
+  }
+
+  void get playerAutoSize => _playerAutoSize();
+
+  ////////////////////////////////////////////////////////////////////////////////////
 }

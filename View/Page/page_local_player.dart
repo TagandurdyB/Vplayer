@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:local_player/View/Page/viev_main_video_list.dart';
 import 'package:local_player/View/Page/view_video_sheed.dart';
 import 'package:local_player/ViewModel/Providers/provider_video.dart';
@@ -13,14 +14,12 @@ class LocalPlayerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final providV = Provider.of<ProviderVideo>(context);
     final isShow = providV.isShowSheed;
-    return ScaffoldAll(
-        funcBackBtn: isShow
-            ? () {
-                providV.changeFullScreen(false);
-                providV.changeShowSheed(false);
-              }
-            : null,
-        body: buildBody(context));
+    return WillPopScope(
+      onWillPop: () => providV.willPop(context),
+      child: ScaffoldAll(
+          funcBackBtn: isShow ? () => providV.backFunc : null,
+          body: buildBody(context)),
+    );
   }
 
   Widget buildBody(BuildContext context) {
@@ -30,9 +29,7 @@ class LocalPlayerPage extends StatelessWidget {
       children: [
         // offstage: !providV.isFullScreen,
         VievMainVideoList(),
-        Offstage(
-            offstage: !providV.isShowSheed,
-            child: const ViewVideoSheed()),
+        Offstage(offstage: !providV.isShowSheed, child: const ViewVideoSheed()),
       ],
     );
   }

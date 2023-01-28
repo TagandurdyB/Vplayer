@@ -25,6 +25,7 @@ class MultipleVideoPicker {
       List<VideoObj> objs = [];
       for (int i = 0; i < result.paths.length; i++) {
         final String? path = result.paths[i];
+        debugPrint("Path:= $path");
         if (path != null) {
           objs.add(VideoObj(
             fileController: VideoPlayerController.file(File(path)),

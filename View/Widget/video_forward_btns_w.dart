@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_player/View/Widget/settings_sheed.dart';
 import 'package:local_player/ViewModel/Providers/provider_file.dart';
+import 'package:local_player/ViewModel/Providers/provider_orientation.dart';
 import 'package:local_player/ViewModel/time_converter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../Model/video_model.dart';
+import '../../ViewModel/Providers/provider_controller.dart';
 import '../../ViewModel/Providers/provider_video.dart';
 import '../../ViewModel/screen_values.dart';
 import 'basic_overlay_widget.dart';
@@ -13,10 +15,8 @@ import 'my_container.dart';
 
 // ignore: must_be_immutable
 class VideoForwardBtns extends StatefulWidget {
-  final VideoPlayerController videoController;
-  final VideoObj obj;
-  const VideoForwardBtns(
-      {super.key, required this.videoController, required this.obj});
+  
+  const VideoForwardBtns({super.key});
 
   @override
   State<VideoForwardBtns> createState() => _VideoForwardBtnsState();
@@ -26,25 +26,32 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
   final screen = Screen();
 
   late bool isFullScreen;
-
   late bool isPause;
+  late bool isPortrait;
+  late double playerWidth;
 
   late double videoWidth;
   late double videoHeight;
+  late double arentir;
+  late BuildContext contextM;
 
   @override
   Widget build(BuildContext context) {
     final providerV = Provider.of<ProviderVideo>(context);
     isFullScreen = providerV.isFullScreen;
     isPause = providerV.isVideoPause;
+    isPortrait = providerV.isPortrait;
+    playerWidth = providerV.playerWidth;
     return LayoutBuilder(builder: (context, constraints) {
       videoWidth = constraints.maxWidth;
       videoHeight = constraints.maxHeight;
+      arentir = isPortrait ? videoWidth : videoHeight;
       return btnGroup();
     });
   }
 
   Widget btnGroup() {
+    Provider.of<ControlVideo>(context).control.addListener(()=>setState((){}));
     return MyContainer(
       onTap: _showBtns,
       color: Colors.black54,
@@ -66,7 +73,8 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
       .changeForwardShow(true);
 
   Widget buildBottomGroup() => Visibility(
-        visible: isFullScreen,
+        //  visible: isFullScreen,
+        visible: playerWidth != screen.playerMinWidth,
         child: Container(
             alignment: Alignment.bottomCenter,
             padding: EdgeInsets.all(screen.width * 0.01),
@@ -79,21 +87,18 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
                   children: [
                     Expanded(
                         child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8.0, right: 8.0, bottom: 5.0),
+                      padding: EdgeInsets.symmetric(horizontal: arentir * 0.02),
                       child: buildVideoIndicator(),
                     )),
-                    const SizedBox(width: 10),
                   ],
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: screen.width * 0.05),
+                  padding: EdgeInsets.symmetric(horizontal: arentir * 0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.max,
                         children: [
                           buildTimer(),
                           buildSound(),
@@ -110,15 +115,69 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
   Widget buildTimer() => Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Text(
-          TimeConterter(widget.videoController).getTime,
-          style: TextStyle(fontSize: screen.width * 0.03),
+          TimeConterter(Provider.of<ControlVideo>(context).control).getTime,
+          style: TextStyle(fontSize: arentir * 0.03),
         ),
       );
-
-  Widget buildSound() => Icon(
-        Icons.volume_up_sharp,
-        color: Colors.grey[300],
+//Volume/////////////////////////////////////////////////////////
+  Widget buildSound() => Row(
+        children: [
+          buildVolumeBtn(),
+          buildVolumeSlider(),
+        ],
       );
+
+  Widget buildVolumeBtn() {
+    final providV = Provider.of<ProviderVideo>(context);
+    final providC = Provider.of<ControlVideo>(context);
+    final providVdo = Provider.of<ProviderVideo>(context, listen: false);
+    return GestureDetector(
+      onTap: () {
+        providVdo.tongleVolume;
+        providC.control.setVolume(providV.setVolume.round() * 0.01);
+      },
+      child: Icon(
+        providV.setVolume >= 50
+            ? Icons.volume_up_sharp
+            : providV.setVolume == 0
+                ? Icons.volume_off_rounded
+                : Icons.volume_down,
+        color: Colors.grey[300],
+        size: arentir * 0.07,
+      ),
+    );
+  }
+
+  Widget buildVolumeSlider() {
+    final providVdo = Provider.of<ProviderVideo>(context, listen: false);
+    final providC = Provider.of<ControlVideo>(context);
+    final providV = Provider.of<ProviderVideo>(context);
+    final double setVolume = providV.setVolume;
+    return SizedBox(
+      width: arentir * 0.4,
+      // height: 40,
+      child: Slider(
+          min: 0,
+          max: 100,
+          value: setVolume,
+          label: "${setVolume.round()}%",
+          onChangeStart: (_) {
+            _showBtns();
+          },
+          onChangeEnd: (_) {
+            _unShowBtns();
+          },
+          onChanged: (double value) {
+              providVdo.changeVolume(value.round() + 0.0);
+              providC.control.setVolume(value.round() * 0.01);
+              _showBtns();
+          }),
+    );
+  }
+
+  void _unShowBtns() =>
+      Provider.of<ProviderVideo>(context, listen: false).changeForwardShowTrue;
+//Landscape-Portrate///////////////////////////////////////////
 
   Widget buildScreenChangeBtn() {
     final bool isPortrait = Provider.of<ProviderVideo>(context).isPortrait;
@@ -127,33 +186,15 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
         color: Colors.transparent,
         child: Icon(
           isPortrait ? Icons.fullscreen : Icons.fullscreen_exit,
-          size: isPortrait ? screen.width * 0.07 : screen.width * 0.1,
+          size: arentir * 0.07,
           color: Colors.grey[300],
         ));
   }
 
-  void setLandscape() async {
-    await SystemChrome.setEnabledSystemUIOverlays([]);
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
+  void funcLandscape() => MyOrientation(context).setLandscape;
 
-  void funcLandscape() {
-    setLandscape();
-    Provider.of<ProviderVideo>(context, listen: false).changeOrientation(false);
-  }
-
-  void setPortrate() async {
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    await SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
-  }
-
-  void funcPortrate() {
-    setPortrate();
-    Provider.of<ProviderVideo>(context, listen: false).changeOrientation(true);
-  }
+  void funcPortrate() => MyOrientation(context).setPortraitUp;
+/////////////////////////////////////////////////////////////////
 
   Widget buildCenterBtns() {
     return Row(
@@ -167,26 +208,26 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
   }
 
   Widget buildVideoChanger(bool isNext) => MyContainer(
-        //   onTap: () => _changeVideo(isNext),
+        onTap: () => _changeVideo(isNext),
         color: Colors.transparent,
         child: Icon(
           isNext ? Icons.skip_next : Icons.skip_previous,
-          size: videoWidth * 0.12,
+          size: arentir * 0.12,
           color: Colors.white,
         ),
       );
-
+/*
   void _checkVideo() {
     final value = widget.videoController.value;
     if (value.position == value.duration) {
       _changeVideo(true);
       debugPrint("Video end");
     }
-  }
+  }*/
 
   late int index;
   void _changeVideo(bool isNext) {
-    index = widget.obj.index;
+    index =Provider.of<ProviderVideo>(context, listen: false).obj.index;
     final int length =
         Provider.of<ProviderFile>(context, listen: false).videos.length;
     if (isNext) {
@@ -200,15 +241,38 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
         index = length - 1;
       }
     }
-    _settingModelBottomSheed();
+    _mainBottomSheed();
   }
 
-  void _settingModelBottomSheed() {
+  /*void _settingModelBottomSheed() {
     final providerF = Provider.of<ProviderFile>(context, listen: false);
     final providerV = Provider.of<ProviderVideo>(context, listen: false);
     providerV.startVideo;
     providerV.changeVideoObj(providerF.videos[index]);
     debugPrint("sheed open!");
+  }*/
+
+  void _mainBottomSheed() {
+    final providV = Provider.of<ProviderVideo>(context, listen: false);
+    final providerF = Provider.of<ProviderFile>(context, listen: false);
+    final providC = Provider.of<ControlVideo>(context, listen: false);
+    final obj = providerF.videos[index];
+     providV.changeShowSheed(false);
+    // ControlVideo().dispos;
+    //providV.changeShowSheed(false);
+    // providC.changeControl(providerF.videos[index].fileController!);
+    // providC.clearPrevious;
+    providV.changeVideoObj(obj);
+  //  providC.changeFileControl(obj.videoFile!);
+    // providC.startVideo(() => setState(() => setState(() {})));
+    providV.startVideo;
+    providV.playerAutoSize;
+    providV.resetVolume;
+    
+    // ControlVideo().startVideo((){});
+    providC.nextPlay(obj.videoFile!);
+
+ providV.changeShowSheed(true);
   }
 
   Widget buildVideoActions() => Visibility(
@@ -222,6 +286,7 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
                 icon: Icon(
                   Icons.settings,
                   color: Colors.grey[300],
+                  size: arentir * 0.07,
                 )),
           ])));
 
@@ -245,19 +310,19 @@ class _VideoForwardBtnsState extends State<VideoForwardBtns> {
           Provider.of<ProviderVideo>(context, listen: false).isVideoPause
               ? Icons.play_arrow
               : Icons.pause,
-          size: videoWidth * 0.2,
+          size: arentir * 0.2,
           color: Colors.white,
         ),
       );
 
   void tongelePlay() {
     final providerV = Provider.of<ProviderVideo>(context, listen: false);
+    final providerC = Provider.of<ControlVideo>(context,listen: false);
     providerV.tonglePause;
     providerV.isVideoPause
-        ? widget.videoController.pause()
-        : widget.videoController.play();
+        ? providerC.pause
+        : providerC.play;
   }
 
-  Widget buildVideoIndicator() =>
-      BasicOverlyWidget(videoController: widget.videoController);
+  Widget buildVideoIndicator() => const BasicOverlyWidget();
 }

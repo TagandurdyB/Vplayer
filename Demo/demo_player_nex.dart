@@ -1,7 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
-
 
 class VideoDemoNext extends StatefulWidget {
   @override
@@ -36,54 +36,60 @@ class _VideoDemoNextState extends State<VideoDemoNext> {
   }
 
   Future<void> _initializePlay({String? videoPath}) async {
-    _videoController =
-        VideoPlayerController.network(videoPath ?? AppResource.videos.first)
-          ..initialize().then((_) {
-            _videoController.play();
-            setState(() {});
-          });
+    _videoController = VideoPlayerController.file(
+        videoPath != null ? File(videoPath) : File(AppResource.videos.first))
+      ..initialize().then((_) {
+        _videoController.play();
+        setState(() {});
+      });
   }
 
   int videoIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: _videoController.value.isInitialized
-                  ? AspectRatio(
-                      aspectRatio: _videoController.value.aspectRatio,
-                      child: VideoPlayer(_videoController),
-                    )
-                  : Container(),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                videoIndex += 1;
-                _nextVideoPlay(
-                    AppResource.videos[videoIndex % AppResource.videos.length]);
-              },
-              child: const Text('NEXT'),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _videoController.value.isPlaying
-                  ? _videoController.pause()
-                  : _videoController.play();
-            });
-          },
-          child: Icon(
-            _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: _videoController.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _videoController.value.aspectRatio,
+                    child: VideoPlayer(_videoController),
+                  )
+                : Container(
+                    color: Colors.black,
+                    width: double.infinity,
+                    height: 200,
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(),
+                  ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              videoIndex += 1;
+              _nextVideoPlay(
+                  AppResource.videos[videoIndex % AppResource.videos.length]);
+            },
+            child: const Text('NEXT'),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: () {
+          setState(() {
+            _videoController.value.isPlaying
+                ? _videoController.pause()
+                : _videoController.play();
+          });
+        },
+        child: Icon(
+          _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
         ),
-      )
-    ;
+      ),
+    );
   }
 
   @override
@@ -95,11 +101,14 @@ class _VideoDemoNextState extends State<VideoDemoNext> {
 
 class AppResource {
   static List<String> videos = [
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    /*'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4',
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',*/
+    "/data/user/0/com.example.local_player/cache/file_picker/reco7.mp4",
+    "/data/user/0/com.example.local_player/cache/file_picker/20230110_192734.mp4",
+    "/data/user/0/com.example.local_player/cache/file_picker/20221218_230052.mp4"
   ];
 }

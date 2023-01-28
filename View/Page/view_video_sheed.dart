@@ -21,17 +21,25 @@ class _ViewVideoSheedState extends State<ViewVideoSheed> {
     final bool isFull = providV.isFullScreen;
     final bool isPortr = providV.isPortrait;
     final size = Screen();
-    return AnimatedContainer(
-      color: Colors.red,
-      duration: MyTimes().timeSheed,
-      height: isPortr
-          ? isFull
-              ? size.height
-              : size.playerMinHeight
-          : Screen().playerLandscapeHeight,
-      width: double.infinity,
-      child: Visibility(
-          visible: isShow, child: MyBottomVideoSheed(obj: providV.obj)),
+    return GestureDetector(
+       onTap: () { 
+        final providV=
+        Provider.of<ProviderVideo>(context, listen: false);
+         providV.changeFullScreen(true);
+         providV.playerAutoSize;
+         },
+      child: AnimatedContainer(
+        color: Colors.grey[700],
+        duration: MyTimes().timeSheed,
+        height: isPortr
+            ? isFull
+                ? size.height
+                : size.playerMinHeight
+            : Screen().playerLandscapeHeight,
+        width: double.infinity,
+        child: Visibility(
+            visible: isShow, child: MyBottomVideoSheed(obj: providV.obj)),
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:local_player/View/Widget/my_container.dart';
+import 'package:local_player/ViewModel/Providers/provider_controller.dart';
 import 'package:local_player/ViewModel/Providers/provider_file.dart';
 import 'package:local_player/ViewModel/Providers/provider_orientation.dart';
 
@@ -16,5 +18,7 @@ class MyProviders {
             create: (context) => ProviderFile()),
         ChangeNotifierProvider<ProviderOrientation>(
             create: (context) => ProviderOrientation()),
+            ChangeNotifierProvider<ControlVideo>(
+            create: (context) => ControlVideo()),
       ];
 }
